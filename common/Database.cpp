@@ -1,4 +1,5 @@
 #include "Database.hpp"
+#include "Converter.hpp"
 
 Database::Database()
 {
@@ -23,7 +24,11 @@ bool		Database::init(std::string const &path)
 	return ret;
 }
 
-void		Database::addRoad(Road &road)
+bool		Database::addRoad(Road &road)
 {
+	std::string		request = "INSERT INTO roads (, ";
 
+	request += road.getName() + ", " + Converter::toString(road.getSpeed()) + ")";
+
+	return this->oneStepRequest(request);
 }
