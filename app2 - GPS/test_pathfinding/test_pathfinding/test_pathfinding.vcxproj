@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../../../common;$(IncludePath)</IncludePath>
+    <IncludePath>../../../common;../../;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -67,14 +67,14 @@
     <ClCompile Include="..\..\..\common\Link.cpp" />
     <ClCompile Include="..\..\..\common\Node.cpp" />
     <ClCompile Include="..\..\..\common\Road.cpp" />
+    <ClCompile Include="..\..\PathFinding.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PathFinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\common\Link.hpp" />
     <ClInclude Include="..\..\..\common\Node.hpp" />
     <ClInclude Include="..\..\..\common\Road.hpp" />
-    <ClInclude Include="PathFinding.hpp" />
+    <ClInclude Include="..\..\PathFinding.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

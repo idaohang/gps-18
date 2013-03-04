@@ -18,7 +18,7 @@ int main()
 	Road *road = new Road("youpi", 1);
 
 	n1->addLink(*n3, 1, road);
-	//n3->addLink(*n1, 1, road);
+	n3->addLink(*n1, 1, road);
 
 	n2->addLink(*n3, 1, road);
 	n3->addLink(*n2, 1, road);
