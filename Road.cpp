@@ -12,8 +12,6 @@ Road::~Road()
 
 void					Road::addLink(Node &node1, Node &node2)
 {
-	Link				link(node1, node2, this);
-
 	node1.addLink(node2, this);
 	node2.addLink(node1, this);
 	_nodes.push_back(&node1);

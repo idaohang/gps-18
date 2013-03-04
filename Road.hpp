@@ -12,7 +12,7 @@ public:
 
 	void				addLink(Node &node1, Node &node2);
 
-	std::string const	getName() const;
+	std::string const	&getName() const;
 	void				setName(std::string const &name);
 
 private:

@@ -1,9 +1,8 @@
 #include "Node.hpp"
 #include "Road.hpp"
-#include <math>
 
 Node::Node(double x, double y)
-	: _x(x), _y(y)
+	: _x(x), _y(y), _weigth(-1.0)
 {
 }
 
@@ -31,6 +30,11 @@ double		Node::getY() const
 	return _y;
 }
 
+double		Node::getWeigth() const
+{
+	return _weigth;
+}
+
 double		Node::distance(Node &node) const
 {
 	double	x = _x - node._x;
@@ -53,4 +57,9 @@ void		Node::setPosition(double x, double y)
 {
 	this->setX(x);
 	this->setY(y);
+}
+
+void		Node::setWeigth(double weigth)
+{
+	_weigth = weigth;
 }
