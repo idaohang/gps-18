@@ -13,10 +13,12 @@ Node::~Node()
 
 void		Node::addLink(Link const &link)
 {
-	if (&link.node == this)
-		_links.push_back(link);
-	else if (&link.node2 == this)
-		_links.push_back(link);
+	_links.push_back(link);
+}
+
+void		Node::addLink(Node &link, Road *road)
+{
+	_links.push_back(Link(link, this->distance(link), road));
 }
 
 double		Node::getX() const
@@ -27,6 +29,14 @@ double		Node::getX() const
 double		Node::getY() const
 {
 	return _y;
+}
+
+double		Node::distance(Node &node) const
+{
+	double	x = _x - node._x;
+	double	y = _y - node._y;
+
+	return x * x + y * y;
 }
 
 void		Node::setX(double x)

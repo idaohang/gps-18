@@ -2,7 +2,7 @@
 
 #include <list>
 #include <string>
-#include "Link.hpp"
+#include "Node.hpp"
 
 class Road
 {
@@ -17,5 +17,5 @@ public:
 
 private:
 	std::string			_name;
-	std::list<Link>		_links;
+	std::list<Node*>	_nodes;
 };
