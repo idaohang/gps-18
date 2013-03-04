@@ -13,12 +13,12 @@ public:
 	void	setBegin(Node *node);
 	void	setEnd(Node *node);
 	void	resolve();
-	std::deque<Node *> const &getResult() const;
+	std::deque<Link *> const &getResult() const;
 
 private:
 	Node	*_begin;
 	Node	*_end;
-	std::deque<Node *> _result;
+	std::deque<Link *> _result;
 
 
 	typedef std::priority_queue<Node *, std::vector<Node*>, std::less<std::vector<Node *>::value_type>> NodeQueue;

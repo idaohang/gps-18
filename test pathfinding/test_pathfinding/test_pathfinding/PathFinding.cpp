@@ -26,53 +26,72 @@ void	PathFinding::setEnd(Node *node)
 {
 	NodeQueue queue;
 
-	queue.push(_end);
+	_begin->setWeigth(0);
+	queue.push(_begin);
 	this->algo(queue);
 	this->createNodeList();
 }
 
 void	PathFinding::algo(NodeQueue &queue) const
 {
-	while (!queue.empty())
+	bool	isEnd = false;
+	while (!queue.empty() && !isEnd)
 	{
 		Node *currentNode = queue.top();
+		if (currentNode == _end)
+			break;
+		Link	*currentLink = currentNode->getPrevLink();
 		queue.pop();
 		std::list<Link> &links = currentNode->getLinks();
-		for (std::list<Link>::const_iterator it = links.begin(); it != links.end(); ++it)
+		for (std::list<Link>::iterator it = links.begin(); it != links.end(); ++it)
 		{
-			Link const &curLink = *it;
-			double time = currentNode->getWeigth() + static_cast<double>(curLink.distance) / curLink.road->getSpeed();
+			Link &curLink = *it;
+			double time = currentNode->getWeigth() + curLink.distance / curLink.road->getSpeed();
 			if (curLink.node.getWeigth() < 0 || curLink.node.getWeigth() > time)
 			{
 				curLink.node.setWeigth(time);
+				curLink.node.setPrevLink(&curLink);
+				curLink.prevLink = currentLink;
+				//if (&curLink.node == _end)
+				//{
+				//	isEnd = true;
+				//	break;
+				//}
 				queue.push(&curLink.node);
 			}
 		}
 	}
 }
 
-std::deque<Node *> const &PathFinding::getResult() const
+std::deque<Link *> const &PathFinding::getResult() const
 {
 	return _result;
 }
 
 void	PathFinding::createNodeList()
 {
-	Node *currentNode = _begin;
-	if (currentNode->getWeigth() < 0)
-		return ;
-	while (currentNode != _end)
+	Link *curLink = _end->getPrevLink();
+
+	while (curLink != 0)
 	{
-		_result.push_back(currentNode);
-		Node *nextNode = 0;
-		std::list<Link> &links = currentNode->getLinks();
-		for (std::list<Link>::const_iterator it = links.begin(); it != links.end(); ++it)
-		{
-			Link const &curLink = *it;
-			if (curLink.node.getWeigth() >= 0 && (!nextNode || curLink.node.getWeigth() < nextNode->getWeigth()))
-				nextNode = &curLink.node;
-		}
-		currentNode = nextNode;
+		_result.push_front(curLink);
+		curLink = curLink->prevLink;
 	}
-	_result.push_back(currentNode);
+	//Node *currentNode = _begin;
+	//if (currentNode->getWeigth() < 0)
+	//	return ;
+	//while (currentNode != _end)
+	//{
+	//	_result.push_back(currentNode);
+	//	Node *nextNode = 0;
+	//	std::list<Link> &links = currentNode->getLinks();
+	//	for (std::list<Link>::const_iterator it = links.begin(); it != links.end(); ++it)
+	//	{
+	//		Link const &curLink = *it;
+	//		if (curLink.node.getWeigth() >= 0 && (!nextNode || curLink.node.getWeigth() < nextNode->getWeigth()))
+	//			nextNode = &curLink.node;
+	//	}
+	//	currentNode = nextNode;
+	//}
+	//_result.push_back(currentNode);
 }

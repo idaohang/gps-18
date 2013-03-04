@@ -2,7 +2,7 @@
 #include "Node.hpp"
 #include "Road.hpp"
 
-Link::Link(Node &node, int distance, Road *road)
-	: node(node), road(road), distance(distance)
+Link::Link(Node &node, double distance, Road *road)
+	: node(node), road(road), distance(distance), prevLink(0)
 {
 }
