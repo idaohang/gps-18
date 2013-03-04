@@ -3,7 +3,7 @@
 #include <list>
 #include "Singleton.hpp"
 #include "SQLiteDatabase.hpp"
-#include "Structs.hpp"
+#include "Road.hpp"
 
 class Database : public SQLiteDatabase, public Net::Singleton<Database>
 {
@@ -12,4 +12,5 @@ public:
 	virtual ~Database();
 
 	bool		init(std::string const &path);
+	void		addRoad(Road &road);
 };
