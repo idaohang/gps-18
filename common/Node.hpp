@@ -10,12 +10,12 @@ public:
 	~Node();
 
 	void		addLink(Link const &link);
-	void		addLink(Node &link, Road *road = nullptr);
+	void		addLink(Node &link, double scale, Road *road = nullptr);
 
 	double		getX() const;
 	double		getY() const;
+	int			distance(Node &node, double scale) const;
 	double		getWeigth() const;
-	double		distance(Node &node) const;
 
 	void		setX(double x);
 	void		setY(double y);

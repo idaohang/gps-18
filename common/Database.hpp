@@ -5,7 +5,7 @@
 #include "SQLiteDatabase.hpp"
 #include "Road.hpp"
 
-class Database : public SQLiteDatabase, public Net::Singleton<Database>
+class Database : public SQLiteDatabase, public Singleton<Database>
 {
 public:
 	Database();

@@ -1,5 +1,9 @@
 #include "Node.hpp"
 #include "Road.hpp"
+<<<<<<< HEAD
+#include <cmath>
+=======
+>>>>>>> 86e7be74dc25bafd2272c44542c526723de7c850
 
 Node::Node(double x, double y)
 	: _x(x), _y(y), _weigth(-1.0)
@@ -15,9 +19,9 @@ void		Node::addLink(Link const &link)
 	_links.push_back(link);
 }
 
-void		Node::addLink(Node &link, Road *road)
+void		Node::addLink(Node &link, double scale, Road *road)
 {
-	_links.push_back(Link(link, this->distance(link), road));
+	_links.push_back(Link(link, this->distance(link, scale), road));
 }
 
 double		Node::getX() const
@@ -35,12 +39,12 @@ double		Node::getWeigth() const
 	return _weigth;
 }
 
-double		Node::distance(Node &node) const
+int			Node::distance(Node &node, double scale) const
 {
 	double	x = _x - node._x;
 	double	y = _y - node._y;
 
-	return x * x + y * y;
+	return static_cast<int>(::sqrt(x * x + y * y) * scale);
 }
 
 void		Node::setX(double x)
