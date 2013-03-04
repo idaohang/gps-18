@@ -12,5 +12,5 @@ public:
 	virtual ~Database();
 
 	bool		init(std::string const &path);
-	void		addRoad(Road &road);
+	bool		addRoad(Road &road);
 };
