@@ -15,13 +15,18 @@ public:
 	double		getX() const;
 	double		getY() const;
 	int			distance(Node &node, double scale) const;
+	double		getWeigth() const;
 
 	void		setX(double x);
 	void		setY(double y);
 	void		setPosition(double x, double y);
+	void		setWeigth(double weigth);
 
 private:
 	double				_x;
 	double				_y;
 	std::list<Link>		_links;
+
+	// for dijkstra algorithm
+	double				_weigth;
 };
