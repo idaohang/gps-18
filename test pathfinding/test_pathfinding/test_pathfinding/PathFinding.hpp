@@ -15,6 +15,6 @@ private:
 	Node	*_begin;
 	Node	*_end;
 
-	void	algo(Node *begin, Node *end, std::deque<Node *> &queue);
+	void	algo(Node *begin, Node *end, std::deque<Node *> &queue, double currentWeigth) const;
 };
 

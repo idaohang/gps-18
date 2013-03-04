@@ -22,6 +22,8 @@ public:
 	void		setPosition(double x, double y);
 	void		setWeigth(double weigth);
 
+	std::list<Link>	&getLinks();
+
 private:
 	double				_x;
 	double				_y;

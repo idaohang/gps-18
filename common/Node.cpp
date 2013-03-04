@@ -63,3 +63,8 @@ void		Node::setWeigth(double weigth)
 {
 	_weigth = weigth;
 }
+
+std::list<Link>	&Node::getLinks()
+{
+	return _links;
+}
