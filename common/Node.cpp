@@ -1,9 +1,6 @@
 #include "Node.hpp"
 #include "Road.hpp"
-<<<<<<< HEAD
 #include <cmath>
-=======
->>>>>>> 86e7be74dc25bafd2272c44542c526723de7c850
 
 Node::Node(double x, double y)
 	: _x(x), _y(y), _weigth(-1.0)
@@ -71,4 +68,9 @@ void		Node::setWeigth(double weigth)
 std::list<Link>	&Node::getLinks()
 {
 	return _links;
+}
+
+bool		Node::operator<(Node &node)
+{
+	return (this->_weigth < node.getWeigth());
 }

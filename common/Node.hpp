@@ -24,6 +24,8 @@ public:
 
 	std::list<Link>	&getLinks();
 
+	bool		operator<(Node &node);
+
 private:
 	double				_x;
 	double				_y;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <deque>
 #include "Node.hpp"
 
 class PathFinding
@@ -9,12 +10,20 @@ public:
 	PathFinding();
 	~PathFinding();
 
-	void	resolve() const;
+	void	setBegin(Node *node);
+	void	setEnd(Node *node);
+	void	resolve();
+	std::deque<Node *> const &getResult() const;
 
 private:
 	Node	*_begin;
 	Node	*_end;
+	std::deque<Node *> _result;
 
-	void	algo(Node *begin, Node *end, std::deque<Node *> &queue, double currentWeigth) const;
+
+	typedef std::priority_queue<Node *, std::vector<Node*>, std::less<std::vector<Node *>::value_type>> NodeQueue;
+
+	void	algo(NodeQueue &queue) const;
+	void	createNodeList();
 };
 
