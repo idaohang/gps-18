@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../../../;$(IncludePath)</IncludePath>
+    <IncludePath>../../../common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -64,16 +64,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Link.cpp" />
-    <ClCompile Include="..\..\..\Node.cpp" />
-    <ClCompile Include="..\..\..\Road.cpp" />
+    <ClCompile Include="..\..\..\common\Link.cpp" />
+    <ClCompile Include="..\..\..\common\Node.cpp" />
+    <ClCompile Include="..\..\..\common\Road.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathFinding.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Link.hpp" />
-    <ClInclude Include="..\..\..\Node.hpp" />
-    <ClInclude Include="..\..\..\Road.hpp" />
+    <ClInclude Include="..\..\..\common\Link.hpp" />
+    <ClInclude Include="..\..\..\common\Node.hpp" />
+    <ClInclude Include="..\..\..\common\Road.hpp" />
     <ClInclude Include="PathFinding.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
