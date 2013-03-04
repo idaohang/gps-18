@@ -6,9 +6,9 @@ class Node;
 class Link
 {
 public:
-	Link(Node &node, double distance = 0, Road *road = nullptr);
+	Link(Node &node, int distance = 0, Road *road = nullptr);
 
 	Node		&node;
 	Road		*road;
-	double		distance;
+	int			distance;
 };
