@@ -52,12 +52,12 @@ void	PathFinding::algo(NodeQueue &queue, PathFinding::PathMode mode) const
 				time = currentNode->getWeigth() + curLink.distance / curLink.road->getSpeed();
 			else
 				time = currentNode->getWeigth() + curLink.distance;
-			if (curLink.node.getWeigth() < 0 || curLink.node.getWeigth() > time)
+			if (curLink.node->getWeigth() < 0 || curLink.node->getWeigth() > time)
 			{
-				curLink.node.setWeigth(time);
-				curLink.node.setPrevLink(&curLink);
+				curLink.node->setWeigth(time);
+				curLink.node->setPrevLink(&curLink);
 				curLink.prevLink = currentLink;
-				queue.push(&curLink.node);
+				queue.push(curLink.node);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ void	PathFinding::reset(Node *node)
 	for (std::list<Link>::iterator it = links.begin(); it != links.end(); ++it)
 	{
 		Link &curLink = *it;
-		if (curLink.node.getWeigth() >= 0)
-			this->reset(&curLink.node);
+		if (curLink.node->getWeigth() >= 0)
+			this->reset(curLink.node);
 	}
 }
