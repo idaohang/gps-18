@@ -34,14 +34,13 @@ void	PathFinding::setEnd(Node *node)
 
 void	PathFinding::algo(NodeQueue &queue, PathFinding::PathMode mode) const
 {
-	bool	isEnd = false;
-	while (!queue.empty() && !isEnd)
+	while (!queue.empty())
 	{
 		Node *currentNode = queue.top();
+		queue.pop();
 		if (currentNode == _end)
 			break;
 		Link	*currentLink = currentNode->getPrevLink();
-		queue.pop();
 		std::list<Link> &links = currentNode->getLinks();
 		for (std::list<Link>::iterator it = links.begin(); it != links.end(); ++it)
 		{
