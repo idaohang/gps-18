@@ -10,9 +10,15 @@ public:
 	PathFinding();
 	~PathFinding();
 
+	enum PathMode
+	{
+		SHORTEST,
+		FASTEST
+	};
+
 	void	setBegin(Node *node);
 	void	setEnd(Node *node);
-	void	resolve();
+	void	resolve(PathMode mode);
 	std::deque<Link *> const &getResult() const;
 
 private:
@@ -23,7 +29,7 @@ private:
 
 	typedef std::priority_queue<Node *, std::vector<Node*>, std::less<std::vector<Node *>::value_type>> NodeQueue;
 
-	void	algo(NodeQueue &queue) const;
+	void	algo(NodeQueue &queue, PathMode mode) const;
 	void	createNodeList();
 };
 

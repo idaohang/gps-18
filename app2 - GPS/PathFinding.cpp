@@ -22,17 +22,17 @@ void	PathFinding::setEnd(Node *node)
 	_end = node;
 }
 
-	void	PathFinding::resolve()
+	void	PathFinding::resolve(PathFinding::PathMode mode)
 {
 	NodeQueue queue;
 
 	_begin->setWeigth(0);
 	queue.push(_begin);
-	this->algo(queue);
+	this->algo(queue, mode);
 	this->createNodeList();
 }
 
-void	PathFinding::algo(NodeQueue &queue) const
+void	PathFinding::algo(NodeQueue &queue, PathFinding::PathMode mode) const
 {
 	bool	isEnd = false;
 	while (!queue.empty() && !isEnd)
@@ -46,17 +46,16 @@ void	PathFinding::algo(NodeQueue &queue) const
 		for (std::list<Link>::iterator it = links.begin(); it != links.end(); ++it)
 		{
 			Link &curLink = *it;
-			double time = currentNode->getWeigth() + curLink.distance / curLink.road->getSpeed();
+			double time;
+			if (mode == PathFinding::FASTEST)
+				time = currentNode->getWeigth() + curLink.distance / curLink.road->getSpeed();
+			else
+				time = currentNode->getWeigth() + curLink.distance;
 			if (curLink.node.getWeigth() < 0 || curLink.node.getWeigth() > time)
 			{
 				curLink.node.setWeigth(time);
 				curLink.node.setPrevLink(&curLink);
 				curLink.prevLink = currentLink;
-				//if (&curLink.node == _end)
-				//{
-				//	isEnd = true;
-				//	break;
-				//}
 				queue.push(&curLink.node);
 			}
 		}
