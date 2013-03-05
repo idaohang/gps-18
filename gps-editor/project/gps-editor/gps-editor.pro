@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2013-02-27T16:14:21
+# Project created by QtCreator 2013-03-05T14:21:44
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = GPS
+TARGET = gps-editor
 TEMPLATE = app
 
 
@@ -17,7 +17,8 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    mainwindow.ui
 
 OTHER_FILES += \
-    ../../../../../../Users/nole_p/Pictures/gps-200m.png
+    ../../map/map-200m.png
