@@ -12,8 +12,9 @@ public:
 
 	void				addLink(Node &node1, Node &node2, double scale);
 
-	std::string const	&getName() const;
-	int					getSpeed() const;
+	std::string const		&getName() const;
+	int						getSpeed() const;
+	std::list<Node*> const	&getNodes() const;
 
 	void				setName(std::string const &name);
 	void				setSpeed(int speed);

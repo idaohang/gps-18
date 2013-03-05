@@ -28,6 +28,11 @@ int						Road::getSpeed() const
 	return _speed;
 }
 
+std::list<Node*> const	&Road::getNodes() const
+{
+	return _nodes;
+}
+
 void					Road::setName(std::string const &name)
 {
 	_name = name;

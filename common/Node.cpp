@@ -1,9 +1,6 @@
 #include "Node.hpp"
 #include "Road.hpp"
-<<<<<<< HEAD
 #include <cmath>
-=======
->>>>>>> 86e7be74dc25bafd2272c44542c526723de7c850
 
 Node::Node(double x, double y)
 	: _x(x), _y(y), _weigth(-1.0)
@@ -45,6 +42,25 @@ int			Node::distance(Node &node, double scale) const
 	double	y = _y - node._y;
 
 	return static_cast<int>(::sqrt(x * x + y * y) * scale);
+}
+
+std::list<Link> const	&Node::getLinks() const
+{
+	return _links;
+}
+
+bool					Node::hasLinkTo(Node &node, Link *link) const
+{
+	for (auto it = _links.begin(); it != _links.end(); it++)
+	{
+		if (&node == it->node)
+		{
+			if (link)
+				*link = *it;
+			return true;
+		}
+	}
+	return false;
 }
 
 void		Node::setX(double x)

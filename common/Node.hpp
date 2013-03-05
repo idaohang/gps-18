@@ -12,10 +12,12 @@ public:
 	void		addLink(Link const &link);
 	void		addLink(Node &link, double scale, Road *road = nullptr);
 
-	double		getX() const;
-	double		getY() const;
-	int			distance(Node &node, double scale) const;
-	double		getWeigth() const;
+	double					getX() const;
+	double					getY() const;
+	int						distance(Node &node, double scale) const;
+	double					getWeigth() const;
+	std::list<Link> const	&getLinks() const;
+	bool					hasLinkTo(Node &node, Link *link = nullptr) const;
 
 	void		setX(double x);
 	void		setY(double y);

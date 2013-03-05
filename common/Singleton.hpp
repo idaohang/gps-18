@@ -45,13 +45,11 @@ public:
 	}
 
 private:
-	Singleton(Singleton const &other);
-	Singleton		&operator=(Singleton const &other);
 
 	static void				allocSingleton()
 	{
 		if (_singleton == nullptr)
-			_singleton = new T
+			_singleton = new T;
 	}
 
 	static T    			*_singleton;

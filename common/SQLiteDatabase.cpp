@@ -131,6 +131,10 @@ std::shared_ptr<SQLiteRequest>	SQLiteDatabase::request(std::string const &str)
 	return std::shared_ptr<SQLiteRequest>(new SQLiteRequest(*this, str));
 }
 
+int64_t							SQLiteDatabase::getLastInsertRowID()
+{
+	return sqlite3_last_insert_rowid(_db);
+}
 
 // Request
 
