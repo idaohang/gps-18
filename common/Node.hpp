@@ -33,7 +33,7 @@ private:
 	double				_y;
 	std::list<Link>		_links;
 
-	// for dijkstra algorithm
+	// variable used for the pathfinding
 	double				_weigth;
 	Link				*_prevLink;
 };
