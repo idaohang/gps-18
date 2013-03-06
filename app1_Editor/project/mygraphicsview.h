@@ -5,7 +5,9 @@
 #include <QObject>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QGraphicsEllipseItem>
 #include <deque>
+#include <iostream>
 
 class MyGraphicsView : public QGraphicsView
 {
@@ -27,8 +29,9 @@ public:
 
 private:
     QBrush  node;
-    QBrush  link;
     QPen    pen;
+    std::deque<QGraphicsEllipseItem *>  points;
+    std::deque<QGraphicsLineItem *>  lines;
 
 };
 
