@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <map>
 #include "Singleton.hpp"
 #include "SQLiteDatabase.hpp"
 #include "Road.hpp"
@@ -12,5 +13,17 @@ public:
 	virtual ~Database();
 
 	bool		init(std::string const &path);
-	bool		addRoad(Road &road);
+	void		load();
+	int64_t		addRoad(Road &road);
+	int64_t		addNode(Node &node);
+	int64_t		addLink(Node &node, Link &link);
+
+	std::map<int64_t, Road*>			roads;
+	std::map<int64_t, Node*>			nodes;
+	std::map<int64_t, std::list<Link>>	links;
+
+private:
+	void		loadRoad();
+	void		loadNode();
+	void		loadLink();
 };

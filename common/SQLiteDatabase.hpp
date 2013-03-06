@@ -27,6 +27,8 @@ public:
 	bool							oneStepRequest(std::string const &str);
 	std::shared_ptr<SQLiteRequest>	request(std::string const &str);
 
+	int64_t			getLastInsertRowID();
+
 	std::string		getLastError() const;
 
 private:

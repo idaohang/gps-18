@@ -3,7 +3,7 @@
 #include <cmath>
 
 Node::Node(double x, double y)
-	: _x(x), _y(y), _weigth(-1.0), _prevLink(0)
+	: _x(x), _y(y), _weigth(-1.0), _prevLink(0), _id(-1)
 {
 }
 
@@ -49,6 +49,30 @@ double			Node::distance(Node &node, double scale) const
 	return ::sqrt(x * x + y * y) * scale;
 }
 
+std::list<Link> const	&Node::getLinks() const
+{
+	return _links;
+}
+
+bool					Node::hasLinkTo(Node &node, Link *link) const
+{
+	for (auto it = _links.begin(); it != _links.end(); it++)
+	{
+		if (&node == it->node)
+		{
+			if (link)
+				*link = *it;
+			return true;
+		}
+	}
+	return false;
+}
+
+int64_t		Node::getId() const
+{
+	return _id;
+}
+
 void		Node::setX(double x)
 {
 	_x = x;
@@ -83,4 +107,9 @@ std::list<Link>	&Node::getLinks()
 bool		Node::operator<(Node &node)
 {
 	return (this->_weigth < node.getWeigth());
+}
+
+void		Node::setId(int64_t id)
+{
+	_id = id;
 }
