@@ -3,7 +3,7 @@
 #include <cmath>
 
 Node::Node(double x, double y)
-	: _x(x), _y(y), _weigth(-1.0), _prevLink(0)
+	: _x(x), _y(y), _weigth(-1.0), _prevLink(0), _id(-1)
 {
 }
 
@@ -68,6 +68,11 @@ bool					Node::hasLinkTo(Node &node, Link *link) const
 	return false;
 }
 
+int64_t		Node::getId() const
+{
+	return _id;
+}
+
 void		Node::setX(double x)
 {
 	_x = x;
@@ -102,4 +107,9 @@ std::list<Link>	&Node::getLinks()
 bool		Node::operator<(Node &node)
 {
 	return (this->_weigth < node.getWeigth());
+}
+
+void		Node::setId(int64_t id)
+{
+	_id = id;
 }

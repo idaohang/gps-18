@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 class Road;
 class Node;
 
@@ -16,4 +18,7 @@ public:
 	// variable used for the pathfinding
 
 	Link		*prevLink;
+
+	// for sql
+	int64_t		id;
 };

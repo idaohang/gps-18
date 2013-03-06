@@ -2,7 +2,7 @@
 #include "Link.hpp"
 
 Road::Road(std::string const &name, int speed)
-	: _name(name), _speed(speed)
+	: _name(name), _speed(speed), _id(-1)
 {
 }
 
@@ -33,6 +33,11 @@ std::list<Node*> const	&Road::getNodes() const
 	return _nodes;
 }
 
+int64_t					Road::getId() const
+{
+	return _id;
+}
+
 void					Road::setName(std::string const &name)
 {
 	_name = name;
@@ -41,4 +46,9 @@ void					Road::setName(std::string const &name)
 void					Road::setSpeed(int speed)
 {
 	_speed = speed;
+}
+
+void					Road::setId(int64_t id)
+{
+	_id = id;
 }

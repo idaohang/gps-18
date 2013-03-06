@@ -3,7 +3,7 @@
 #include <list>
 #include "Singleton.hpp"
 #include "SQLiteDatabase.hpp"
-#include "Road.hpp"
+#include "Graph.hpp"
 
 class Database : public SQLiteDatabase, public Singleton<Database>
 {
@@ -12,5 +12,11 @@ public:
 	virtual ~Database();
 
 	bool		init(std::string const &path);
-	bool		addRoad(Road &road);
+	void		load(Graph &graph);
+	bool		addRoad(Road &road, Graph &graph);
+
+private:
+	void		loadRoad(Graph &graph);
+	void		loadNode(Graph &graph);
+	void		loadLink(Graph &graph);
 };
