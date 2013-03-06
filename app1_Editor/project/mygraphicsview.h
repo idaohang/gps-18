@@ -8,12 +8,15 @@
 #include <QGraphicsEllipseItem>
 #include <deque>
 #include <iostream>
+#include "road.h"
 
 class MyGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
     MyGraphicsView(QWidget *parent = 0);
+    void finishRoadCreation();
+    void CancelRoadCreation();
 
 protected:
     void mousePressEvent(QMouseEvent * event);
@@ -21,15 +24,14 @@ protected:
 signals:
     
 public slots:
-    void Mouse_Pressed();
-    void beginRoadDrawing();
 
 public:
     bool isRoadDrawing;
 
 private:
     QBrush  node;
-    QPen    pen;
+    QPen    nodePen;
+    QPen    linePen;
     std::deque<QGraphicsEllipseItem *>  points;
     std::deque<QGraphicsLineItem *>  lines;
 

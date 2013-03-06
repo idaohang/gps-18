@@ -29,17 +29,40 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btAddRoad_clicked()
 {
-    this->isRoadDrawing = !this->isRoadDrawing;
-    if (this->isRoadDrawing)
-    {
-        this->ui->mapDisplay->setDragMode(QGraphicsView::NoDrag);
-        this->ui->mapDisplay->isRoadDrawing = true;
-        this->ui->btAddRoad->setText("Finish!");
-    }
-    else
-    {
-        this->ui->mapDisplay->setDragMode(QGraphicsView::ScrollHandDrag);
-        this->ui->mapDisplay->isRoadDrawing = false;
-        this->ui->btAddRoad->setText("Add road");
-    }
+    this->EnterRoadCreationMode();
+}
+
+void MainWindow::on_btFinishRoad_clicked()
+{
+    this->LeaveRoadCreationMode();
+    this->ui->mapDisplay->finishRoadCreation();
+}
+
+void MainWindow::EnterRoadCreationMode()
+{
+    this->isRoadDrawing = true;
+    this->ui->gbRoadInfo->setEnabled(true);
+    this->ui->mapDisplay->setDragMode(QGraphicsView::NoDrag);
+    this->ui->mapDisplay->isRoadDrawing = true;
+    this->ui->btAddRoad->setEnabled(false);
+}
+
+void MainWindow::LeaveRoadCreationMode()
+{
+    this->isRoadDrawing = false;
+    this->ui->gbRoadInfo->setEnabled(false);
+    this->ui->mapDisplay->setDragMode(QGraphicsView::ScrollHandDrag);
+    this->ui->mapDisplay->isRoadDrawing = false;
+    this->ui->btAddRoad->setEnabled(true);
+}
+
+void MainWindow::SaveRoad()
+{
+
+}
+
+void MainWindow::on_btCancel_clicked()
+{
+    this->LeaveRoadCreationMode();
+    this->ui->mapDisplay->CancelRoadCreation();
 }
