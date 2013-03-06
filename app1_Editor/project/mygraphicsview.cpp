@@ -66,19 +66,34 @@ void MyGraphicsView::CancelRoadCreation()
     this->lines.clear();
 }
 
-void MyGraphicsView::finishRoadCreation()
+void MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
 {
     std::deque<QGraphicsEllipseItem *>::iterator it1;
     std::deque<QGraphicsLineItem *>::iterator it2;
 
+    Node    *lastPoint;
+    Node    *currentPoint;
+    Road    *road;
+
+    road = new Road(name, speed);
     for (it1 = this->points.begin(); it1 != this->points.end(); ++it1)
     {
+        if (it1 == this->points.begin())
+            lastPoint = new Node((*it1)->pos().x(), (*it1)->pos().y());
+        else
+        {
+            currentPoint = new Node((*it1)->pos().x(), (*it1)->pos().y());
+            road->addLink(*lastPoint, *currentPoint, 1);
+        }
+
         (*it1)->setOpacity(0.3);
+        lastPoint = currentPoint;
     }
     for (it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
     {
         (*it2)->setOpacity(0.3);
     }
+
     this->points.clear();
     this->lines.clear();
 }

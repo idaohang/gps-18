@@ -18,14 +18,21 @@ SOURCES += main.cpp\
     ../../common/Road.cpp \
     ../../common/Node.cpp \
     ../../common/Link.cpp \
-    ../../common/Database.cpp
+    ../../common/Database.cpp \
+    ../../common/SQLiteDatabase.cpp \
+    ../../common/sqlite3.c
 
 HEADERS  += mainwindow.h \
     mygraphicsview.h \
     ../../common/Road.hpp \
     ../../common/Node.hpp \
     ../../common/Link.hpp \
-    ../../common/Database.hpp
+    ../../common/Database.hpp \
+    ../../common/SQLiteDatabase.hpp \
+    ../../common/sqlite3ext.h \
+    ../../common/sqlite3.h \
+    ../../common/Singleton.hpp \
+    ../../common/Converter.hpp
 
 FORMS    += \
     mainwindow.ui

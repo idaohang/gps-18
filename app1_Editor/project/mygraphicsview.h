@@ -8,14 +8,15 @@
 #include <QGraphicsEllipseItem>
 #include <deque>
 #include <iostream>
-#include "road.h"
+#include <string>
+#include "../../common/Road.hpp"
 
 class MyGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
     MyGraphicsView(QWidget *parent = 0);
-    void finishRoadCreation();
+    void FinishRoadCreation(std::string const &, int);
     void CancelRoadCreation();
 
 protected:

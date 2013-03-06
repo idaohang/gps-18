@@ -34,8 +34,14 @@ void MainWindow::on_btAddRoad_clicked()
 
 void MainWindow::on_btFinishRoad_clicked()
 {
-    this->LeaveRoadCreationMode();
-    this->ui->mapDisplay->finishRoadCreation();
+    if (this->ui->txtName->text().trimmed() != ""
+            && this->ui->txtSpeed->text().trimmed() != "")
+    {
+        this->LeaveRoadCreationMode();
+        this->ui->mapDisplay->FinishRoadCreation(this->ui->txtName->text().trimmed().toStdString(), this->ui->txtSpeed->text().toInt());
+
+        //this->ui->lvRoads->
+    }
 }
 
 void MainWindow::EnterRoadCreationMode()
