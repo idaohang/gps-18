@@ -8,7 +8,6 @@
 class PathFinding : public Singleton<PathFinding>
 {
 public:
-	PathFinding();
 	~PathFinding();
 
 	enum PathMode
@@ -33,5 +32,10 @@ private:
 	void	algo(NodeQueue &queue, PathMode mode) const;
 	void	createNodeList();
 	void	reset(Node *node);
+
+	// class only accessible from Singleton
+	PathFinding();
+	PathFinding(PathFinding const &);
+	friend Singleton<PathFinding>;
 };
 
