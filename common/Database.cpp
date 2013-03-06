@@ -68,8 +68,9 @@ int64_t		Database::addLink(Node &node, Link &link)
 	if (link.id != -1)
 		return link.id;
 	bool	oneway;
+	Link	link2;
 
-	if (link.node->hasLinkTo(node))
+	if (link.node->hasLinkTo(node, &link2))
 		oneway = false;
 	else
 		oneway = true;
@@ -77,6 +78,7 @@ int64_t		Database::addLink(Node &node, Link &link)
 	this->oneStepRequest(str + Converter::toString(node.getId()) + ", " + Converter::toString(link.node->getId()) + ", " + 
 		Converter::toString(link.road->getId()) + ((oneway) ? ", 1, " : ", 0, ") + Converter::toString(link.distance) + ")");
 	link.id = this->getLastInsertRowID();
+	link2.id = link.id;
 	this->links[link.id].push_back(link);
 	return link.id;
 }
