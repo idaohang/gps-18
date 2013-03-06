@@ -33,43 +33,34 @@ void		Database::load()
 
 int64_t		Database::addRoad(Road &road)
 {
-	if (road.getId() != -1)
-		return road.getId();
-
-	std::string				str = "INSERT INTO roads VALUES (null, '";
-	std::vector<Node*>		nodes;
-	Link					link;
-
-	this->oneStepRequest(str + road.getName() + "', " + Converter::toString(road.getSpeed()) + ")");
-	str = "INSERT INTO nodes VALUES (null, ";
-	road.setId(this->getLastInsertRowID());
-	this->roads[road.getId()] = &road;
+	if (road.getId() == -1)
+	{
+		std::string		str = "INSERT INTO roads VALUES (null, '";
+		this->oneStepRequest(str + road.getName() + "', " + Converter::toString(road.getSpeed()) + ")");
+		road.setId(this->getLastInsertRowID());
+		this->roads[road.getId()] = &road;
+	}
 
 	for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
-	{
 		this->addNode(**it);
-		nodes.push_back(*it);
-	}
-
-	for (size_t i = 0; i < nodes.size() - 1; ++i)
-	{
-		if (nodes[i]->hasLinkTo(*nodes[i + 1], &link))
-			this->addLink(*nodes[i], link);
-	}
 
 	return road.getId();
 }
 
 int64_t		Database::addNode(Node &node)
 {
-	if (node.getId() != -1)
-		return node.getId();
-	std::string str = "INSERT INTO nodes VALUES (null, ";
-	this->oneStepRequest(Converter::toString(node.getX()) + ", " + Converter::toString(node.getY()) + ")");
-	int64_t		id = this->getLastInsertRowID();
-	node.setId(id);
-	this->nodes[id] = &node;
-	return id;
+	if (node.getId() == -1)
+	{
+		std::string str = "INSERT INTO nodes VALUES (null, ";
+		this->oneStepRequest(Converter::toString(node.getX()) + ", " + Converter::toString(node.getY()) + ")");
+		node.setId(this->getLastInsertRowID());
+		this->nodes[node.getId()] = &node;
+	}
+	
+	for (auto it = node.getLinks().begin(); it != node.getLinks().end(); it++)
+		this->addLink(node, *it);
+
+	return node.getId();
 }
 
 int64_t		Database::addLink(Node &node, Link &link)
