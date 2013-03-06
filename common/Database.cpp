@@ -32,45 +32,63 @@ void		Database::load(Graph &graph)
 	this->loadLink(graph);
 }
 
-bool		Database::addRoad(Road &road, Graph &graph)
+int64_t		Database::addRoad(Road &road, Graph &graph)
 {
 	if (road.getId() != -1)
-		return false;
+		return road.getId();
 
-	std::string									str = "INSERT INTO roads VALUES (null, '";
-	std::vector<std::pair<Node*, std::string>>	nodes;
-	std::string									idRoad;
-	bool										oneway;
-	Link										link;
+	std::string				str = "INSERT INTO roads VALUES (null, '";
+	std::vector<Node*>		nodes;
+	Link					link;
 
 	this->oneStepRequest(str + road.getName() + "', " + Converter::toString(road.getSpeed()) + ")");
 	str = "INSERT INTO nodes VALUES (null, ";
-	idRoad = Converter::toString(this->getLastInsertRowID());
+	road.setId(this->getLastInsertRowID());
+	graph.roads[road.getId()] = &road;
 
 	for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
 	{
-		if ((*it)->getId() != -1)
-			continue;
-		str = "INSERT INTO nodes VALUES (null, ";
-		this->oneStepRequest(Converter::toString((*it)->getX()) + ", " + Converter::toString((*it)->getY()) + ")");
-		nodes.push_back(std::make_pair(*it, Converter::toString(this->getLastInsertRowID())));
+		this->addNode(**it, graph);
+		nodes.push_back(*it);
 	}
 
 	for (size_t i = 0; i < nodes.size() - 1; ++i)
 	{
-		if (nodes[i].first->hasLinkTo(*nodes[i + 1].first, &link) && link.id == -1)
-		{
-			if (nodes[i + 1].first->hasLinkTo(*nodes[i].first))
-				oneway = false;
-			else
-				oneway = true;
-			str = "INSERT INTO links VALUES (null, ";
-			this->oneStepRequest(str + nodes[i].second + ", " + nodes[i + 1].second + ", " + 
-				idRoad + ((oneway) ? ", 1, " : ", 0, ") + Converter::toString(link.distance) + ")");
-		}
+		if (nodes[i]->hasLinkTo(*nodes[i + 1], &link))
+			this->addLink(*nodes[i], link, graph);
 	}
 
-	return true;
+	return road.getId();
+}
+
+int64_t		Database::addNode(Node &node, Graph &graph)
+{
+	if (node.getId() != -1)
+		return node.getId();
+	std::string str = "INSERT INTO nodes VALUES (null, ";
+	this->oneStepRequest(Converter::toString(node.getX()) + ", " + Converter::toString(node.getY()) + ")");
+	int64_t		id = this->getLastInsertRowID();
+	node.setId(id);
+	graph.nodes[id] = &node;
+	return id;
+}
+
+int64_t		Database::addLink(Node &node, Link &link, Graph &graph)
+{
+	if (link.id != -1)
+		return link.id;
+	bool	oneway;
+
+	if (link.node->hasLinkTo(node))
+		oneway = false;
+	else
+		oneway = true;
+	std::string		str = "INSERT INTO links VALUES (null, ";
+	this->oneStepRequest(str + Converter::toString(node.getId()) + ", " + Converter::toString(link.node->getId()) + ", " + 
+		Converter::toString(link.road->getId()) + ((oneway) ? ", 1, " : ", 0, ") + Converter::toString(link.distance) + ")");
+	link.id = this->getLastInsertRowID();
+	graph.links[link.id].push_back(link);
+	return link.id;
 }
 
 void		Database::loadRoad(Graph &graph)

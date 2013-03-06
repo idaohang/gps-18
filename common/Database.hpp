@@ -13,7 +13,9 @@ public:
 
 	bool		init(std::string const &path);
 	void		load(Graph &graph);
-	bool		addRoad(Road &road, Graph &graph);
+	int64_t		addRoad(Road &road, Graph &graph);
+	int64_t		addNode(Node &node, Graph &graph);
+	int64_t		addLink(Node &node, Link &link, Graph &graph);
 
 private:
 	void		loadRoad(Graph &graph);
