@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPixmap             pix;
     QGraphicsPixmapItem *myI = new QGraphicsPixmapItem();
-    QImage              *mapImg = new QImage("..\\..\\map\\map-200m.png");
+    QImage              *mapImg = new QImage("C:/Users/nole_p/Desktop/gps/app1_Editor/map/map-200m.png");
 
     this->isRoadDrawing = false;
     this->scene = new QGraphicsScene();
@@ -33,11 +33,13 @@ void MainWindow::on_btAddRoad_clicked()
     if (this->isRoadDrawing)
     {
         this->ui->mapDisplay->setDragMode(QGraphicsView::NoDrag);
+        this->ui->mapDisplay->isRoadDrawing = true;
         this->ui->btAddRoad->setText("Finish!");
     }
     else
     {
         this->ui->mapDisplay->setDragMode(QGraphicsView::ScrollHandDrag);
+        this->ui->mapDisplay->isRoadDrawing = false;
         this->ui->btAddRoad->setText("Add road");
     }
 }

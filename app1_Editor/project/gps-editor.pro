@@ -23,4 +23,5 @@ FORMS    += \
     mainwindow.ui
 
 OTHER_FILES += \
-    ../../map/map-200m.png
+    ../../map/map-200m.png \
+    ../map/map-200m.png

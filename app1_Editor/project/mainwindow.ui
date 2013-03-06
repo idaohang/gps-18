@@ -24,7 +24,7 @@
        <bool>true</bool>
       </property>
       <property name="dragMode">
-       <enum>QGraphicsView::NoDrag</enum>
+       <enum>QGraphicsView::ScrollHandDrag</enum>
       </property>
      </widget>
     </item>

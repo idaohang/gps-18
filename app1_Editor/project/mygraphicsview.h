@@ -4,6 +4,8 @@
 #include <QtGui>
 #include <QObject>
 #include <QGraphicsView>
+#include <QGraphicsScene>
+#include <deque>
 
 class MyGraphicsView : public QGraphicsView
 {
@@ -19,6 +21,14 @@ signals:
 public slots:
     void Mouse_Pressed();
     void beginRoadDrawing();
+
+public:
+    bool isRoadDrawing;
+
+private:
+    QBrush  node;
+    QBrush  link;
+    QPen    pen;
 
 };
 
