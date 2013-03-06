@@ -14,10 +14,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    mygraphicsview.cpp
+    mygraphicsview.cpp \
+    ../../common/Road.cpp \
+    ../../common/Node.cpp \
+    ../../common/Link.cpp \
+    ../../common/Database.cpp
 
 HEADERS  += mainwindow.h \
-    mygraphicsview.h
+    mygraphicsview.h \
+    ../../common/Road.hpp \
+    ../../common/Node.hpp \
+    ../../common/Link.hpp \
+    ../../common/Database.hpp
 
 FORMS    += \
     mainwindow.ui

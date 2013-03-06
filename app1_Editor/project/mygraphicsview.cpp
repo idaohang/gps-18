@@ -3,10 +3,13 @@
 MyGraphicsView::MyGraphicsView(QWidget *parent) :
     QGraphicsView(parent),
     isRoadDrawing(false),
-    node(Qt::blue),
-    pen(Qt::blue)
+    node(QColor(0, 0, 255, 255)),
+    nodePen(QColor(0, 0, 255, 255)),
+    linePen(QColor(0, 0, 255, 150))
 {
-    pen.setWidth(2);
+    this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    nodePen.setWidth(0);
+    linePen.setWidth(5);
 }
 
 void MyGraphicsView::mousePressEvent(QMouseEvent * event)
@@ -23,10 +26,12 @@ void MyGraphicsView::mousePressEvent(QMouseEvent * event)
             if (!this->points.empty())
             {
                 lastPoint = this->points.back();
-                this->lines.push_back(this->scene()->addLine(lastPoint->scenePos().x(), lastPoint->scenePos().y(), clickPos.x(), clickPos.y(), this->pen));
+                this->lines.push_back(this->scene()->addLine(lastPoint->scenePos().x(), lastPoint->scenePos().y(), clickPos.x(), clickPos.y(), this->linePen));
+
             }
-            this->points.push_back(this->scene()->addEllipse(-4, -4, 8, 8, this->pen, node));
+            this->points.push_back(this->scene()->addEllipse(-4, -4, 8, 8, this->nodePen, node));
             this->points.back()->setPos(clickPos);
+
         }
         else if (event->button() == Qt::RightButton) // remove the last point
         {
@@ -44,13 +49,36 @@ void MyGraphicsView::mousePressEvent(QMouseEvent * event)
     }
 }
 
-void MyGraphicsView::Mouse_Pressed()
+void MyGraphicsView::CancelRoadCreation()
 {
+    std::deque<QGraphicsEllipseItem *>::iterator it1;
+    std::deque<QGraphicsLineItem *>::iterator it2;
 
+    for (it1 = this->points.begin(); it1 != this->points.end(); ++it1)
+    {
+         this->scene()->removeItem(*it1);
+    }
+    for (it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
+    {
+        this->scene()->removeItem(*it2);
+    }
+    this->points.clear();
+    this->lines.clear();
 }
 
-void MyGraphicsView::beginRoadDrawing()
+void MyGraphicsView::finishRoadCreation()
 {
+    std::deque<QGraphicsEllipseItem *>::iterator it1;
+    std::deque<QGraphicsLineItem *>::iterator it2;
 
-
+    for (it1 = this->points.begin(); it1 != this->points.end(); ++it1)
+    {
+        (*it1)->setOpacity(0.3);
+    }
+    for (it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
+    {
+        (*it2)->setOpacity(0.3);
+    }
+    this->points.clear();
+    this->lines.clear();
 }
