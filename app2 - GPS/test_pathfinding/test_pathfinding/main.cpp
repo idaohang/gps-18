@@ -57,6 +57,15 @@ int main()
 	path.setEnd(n1);
 	path.resolve(PathFinding::FASTEST);
 
-	std::deque<Link *> const &result = path.getResult();
-	int i = 0;
+	{
+		std::deque<Link *> const &result = path.getResult();
+		int i = 0;
+	}
+	path.setBegin(n2);
+	path.resolve(PathFinding::FASTEST);
+
+	{
+		std::deque<Link *> const &result = path.getResult();
+		int i = 0;
+	}
 }

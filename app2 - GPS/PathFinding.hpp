@@ -31,5 +31,6 @@ private:
 
 	void	algo(NodeQueue &queue, PathMode mode) const;
 	void	createNodeList();
+	void	reset(Node *node);
 };
 
