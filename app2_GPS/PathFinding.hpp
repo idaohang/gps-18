@@ -3,8 +3,9 @@
 #include <queue>
 #include <deque>
 #include "Node.hpp"
+#include "Singleton.hpp"
 
-class PathFinding
+class PathFinding : public Singleton<PathFinding>
 {
 public:
 	PathFinding();
