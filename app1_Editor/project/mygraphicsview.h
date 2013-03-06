@@ -5,13 +5,19 @@
 #include <QObject>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QGraphicsEllipseItem>
 #include <deque>
+#include <iostream>
+#include <string>
+#include "../../common/Road.hpp"
 
 class MyGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
     MyGraphicsView(QWidget *parent = 0);
+    void FinishRoadCreation(std::string const &, int);
+    void CancelRoadCreation();
 
 protected:
     void mousePressEvent(QMouseEvent * event);
@@ -19,16 +25,16 @@ protected:
 signals:
     
 public slots:
-    void Mouse_Pressed();
-    void beginRoadDrawing();
 
 public:
     bool isRoadDrawing;
 
 private:
     QBrush  node;
-    QBrush  link;
-    QPen    pen;
+    QPen    nodePen;
+    QPen    linePen;
+    std::deque<QGraphicsEllipseItem *>  points;
+    std::deque<QGraphicsLineItem *>  lines;
 
 };
 

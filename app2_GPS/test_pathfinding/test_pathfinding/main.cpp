@@ -51,7 +51,7 @@ int main()
 	n1->addLink(*n6, 1, road2);
 	n6->addLink(*n1, 1, road2);
 
-	PathFinding path;
+	PathFinding &path = PathFinding::get();
 
 	path.setBegin(n4);
 	path.setEnd(n1);
