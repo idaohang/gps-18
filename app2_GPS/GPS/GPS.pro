@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2013-03-05T14:21:44
+# Project created by QtCreator 2013-03-06T21:10:10
 #
 #-------------------------------------------------
 
@@ -8,35 +8,30 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = gps-editor
+TARGET = GPS
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     mygraphicsview.cpp \
+    ../../common/SQLiteDatabase.cpp \
+    ../../common/sqlite3.c \
     ../../common/Road.cpp \
     ../../common/Node.cpp \
     ../../common/Link.cpp \
-    ../../common/Database.cpp \
-    ../../common/SQLiteDatabase.cpp \
-    ../../common/sqlite3.c
+    ../../common/Database.cpp
 
 HEADERS  += mainwindow.h \
-    ../../common/Road.hpp \
-    ../../common/Node.hpp \
-    ../../common/Link.hpp \
-    ../../common/Database.hpp \
+    mygraphicsview.h \
     ../../common/SQLiteDatabase.hpp \
     ../../common/sqlite3ext.h \
     ../../common/sqlite3.h \
     ../../common/Singleton.hpp \
-    ../../common/Converter.hpp \
-    mygraphicsview.h
+    ../../common/Road.hpp \
+    ../../common/Node.hpp \
+    ../../common/Link.hpp \
+    ../../common/Database.hpp \
+    ../../common/Converter.hpp
 
-FORMS    += \
-    mainwindow.ui
-
-OTHER_FILES += \
-    ../../map/map-200m.png \
-    ../map/map-200m.png
+FORMS    += mainwindow.ui
