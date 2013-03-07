@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Init scene
     this->scene = new QGraphicsScene();
     this->scene->setSceneRect(0.0, 0.0, 3793.0, 2704.0);
-    this->myImg = new QImage("C:\\Users\\hameli_p\\Pictures\\WOOT.png");
+    this->myImg = new QImage("C:\\one_piece_wallpaper_911.jpg");
     this->myI = new QGraphicsPixmapItem();
     QPixmap pix;
     pix = pix.fromImage( *(this->myImg), Qt::AutoColor );
@@ -152,7 +152,7 @@ void MainWindow::carMoved(double distance)
     DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
                                                                     this->myCarIsAPlane.getY(),
                                                                     1,
-                                                                    this->myCarIsAPlane.getMoveDistance());
+                                                                    distance);
     computeDirection(myNextDirection);
     this->voice->updateVoice(myNextDirection);
 
