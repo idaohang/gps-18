@@ -4,9 +4,15 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) :
     QGraphicsView(parent),
     isRoadDrawing(false),
     node(QColor(0, 0, 255, 255)),
+    beginBrush(QColor(0, 255, 0, 255)),
+    endBrush(QColor(255, 0, 0, 255)),
     nodePen(QColor(0, 0, 255, 255)),
-    linePen(QColor(0, 0, 255, 150)),
-    secondLinePen(QColor(255, 255, 0, 255))
+    beginPen(QColor(0, 255, 0, 255)),
+    endPen(QColor(255, 0, 0, 255)),
+    linePen(QColor(0, 0, 255, 50)),
+    secondLinePen(QColor(255, 255, 0, 255)),
+    beginPoint(0),
+    endPoint(0)
 {
     this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     nodePen.setWidth(0);

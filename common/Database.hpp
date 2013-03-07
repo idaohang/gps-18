@@ -20,6 +20,10 @@ public:
 	int64_t		addLink(Node &node, Link &link);
 	int64_t		addImage(Image &image);
 
+	void		deleteRoad(Road &road);
+	void		deleteNode(Node &node, Road *road = nullptr);
+	void		deleteLink(Link &link);
+
 	std::map<int64_t, Road*>			roads;
 	std::map<int64_t, Node*>			nodes;
 	std::map<int64_t, std::list<Link>>	links;

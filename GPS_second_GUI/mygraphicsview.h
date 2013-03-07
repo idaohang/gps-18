@@ -31,10 +31,16 @@ public:
 
 public:
     QBrush  node;
+    QBrush  beginBrush;
+    QBrush  endBrush;
     QPen    nodePen;
+    QPen    beginPen;
+    QPen    endPen;
     QPen    linePen;
     QPen    secondLinePen;
     std::deque<QGraphicsEllipseItem *>  points;
+    QGraphicsEllipseItem *beginPoint;
+    QGraphicsEllipseItem *endPoint;
     std::deque<QGraphicsLineItem *>  lines;
     std::deque<QGraphicsLineItem *>  secondLines;
 

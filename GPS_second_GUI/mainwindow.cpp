@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap pix;
     pix = pix.fromImage( *(this->myImg), Qt::AutoColor );
     this->myI->setPixmap(pix);
+    this->myI->setOffset( -0.5 * QPointF( pix.size().width(), pix.size().height() ) );
     this->scene->addItem(this->myI);
     //this->ui->graphicsView->scale(0.2, 0.2);
     this->ui->graphicsView->setRenderHints( QPainter::Antialiasing );
@@ -65,6 +66,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Init voice
     this->voice = new GPSVoice();
+    this->ui->languageList->addItem("English");
+    this->ui->languageList->addItem("Francais");
+    this->ui->languageList->addItem("汉语");
+    connect(this->ui->languageList, SIGNAL(currentTextChanged(QString)), this, SLOT(changeVoice(QString)));
+
 
 
     // BASIC DEBUG GRAPH
@@ -121,15 +127,25 @@ MainWindow::MainWindow(QWidget *parent) :
     this->end = n1;
     this->begin = n4;
 
-    this->myI->setRotation(45);
     this->myI->setZValue(100);
-    QSize size = this->myI->pixmap().size();
-    this->myI->setPos(this->scene->width() / 2 - size.width() / 2, this->scene->height() / 2 - size.height() / 2);
+    this->myI->setPos(this->scene->width() / 2, this->scene->height() / 2);
+}
+
+void MainWindow::changeVoice(const QString & newLanguage)
+{
+    QString lang = newLanguage;
+    if (lang == "Francais")
+        this->voice->setLanguage(LanguageCountry::FR);
+    else if (lang == "English")
+        this->voice->setLanguage(LanguageCountry::EN);
+    else if (lang == "汉语")
+        this->voice->setLanguage(LanguageCountry::CN);
 }
 
 // function called each 1/10 second
 void MainWindow::carMoved(double distance)
 {
+    std::cout << "CAR MOVED" << std::endl;
     if (this->myCarIsAPlane.getNextNode() == NULL)
         return;
     double distanceUntilNextNode = sqrt(pow((this->myCarIsAPlane.getX() - this->myCarIsAPlane.getNextNode()->getX()), 2) +
@@ -143,17 +159,20 @@ void MainWindow::carMoved(double distance)
     this->myCarIsAPlane.setPos(newPosX, newPosY);
 
     // directions
-//    DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
-//                                                                    this->myCarIsAPlane.getY(),
-//                                                                    1,
-//                                                                    distance);
-//    computeDirection(myNextDirection);
-//    this->voice->updateVoice(myNextDirection);
+
+    DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
+                                                                    this->myCarIsAPlane.getY(),
+                                                                    1,
+                                                                    distance);
+    computeDirection(myNextDirection);
+    this->voice->updateVoice(myNextDirection);
 
 
-    this->myI->setPos(this->myCarIsAPlane.getX() - this->myI->pixmap().size().width() / 2,
-                      this->myCarIsAPlane.getY() - this->myI->pixmap().size().height() / 2);
-
+    this->myI->setPos(this->myCarIsAPlane.getX(),
+                      this->myCarIsAPlane.getY());
+    this->myI->setRotation((alpha + ::PI / 2) * (180 / ::PI));
+    if (this->ui->followingCamera->isChecked())
+        this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
 
     // reached the next node
     if (distance - distanceUntilNextNode >= 0.)
@@ -168,7 +187,6 @@ void MainWindow::carMoved(double distance)
         // reached goal
         if (this->indexNode >= this->currentPath.size())
         {
-            this->addDirectionMessage("You have arrived at your destination.");
             this->myCarIsAPlane.setNodes(NULL, NULL);
             this->myCarIsAPlane.stopMoving();
             this->myCarIsAPlane.setPos(nextX, nextY);
@@ -202,31 +220,45 @@ void MainWindow::chooseEnd()
     this->nodeMode = MainWindow::END;
 }
 
-void MainWindow::doPathFinding()
-{
-    if (!this->begin || !this->end)
-        return ;
-    PathFinding::get().setBegin(this->begin);
-    PathFinding::get().setEnd(this->end);
-    PathFinding::get().resolve(PathFinding::FASTEST);
-    std::deque<Link *> const &list = PathFinding::get().getResult();
-    Node *prev = this->begin;
-    for (auto it = list.begin(); it != list.end(); ++it)
-    {
-        Node *cur = (*it)->node;
-    }
-}
-
 void MainWindow::selectNode()
 {
     QList<QGraphicsItem *> &list = this->ui->graphicsView->scene()->selectedItems();
     if (list.empty())
         return ;
     MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
+    item->setSelected(false);
+
     if (this->nodeMode == MainWindow::BEGIN)
+    {
+        QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
+        if (this->ui->graphicsView->beginPoint)
+            this->ui->graphicsView->scene()->removeItem(this->ui->graphicsView->beginPoint);
+        this->ui->graphicsView->beginPoint = item2;
+        item2->setPen(this->ui->graphicsView->beginPen);
+        item2->setBrush(this->ui->graphicsView->beginBrush);
+        QPointF pos;
+        pos.setX(item->node->getX());
+        pos.setY(item->node->getY());
+        item2->setPos(pos);
+        this->ui->graphicsView->scene()->addItem(item2);
+
         this->begin = item->node;
+    }
     else if (this->nodeMode == MainWindow::END)
+    {
+        QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
+        if (this->ui->graphicsView->endPoint)
+            this->ui->graphicsView->scene()->removeItem(this->ui->graphicsView->endPoint);
+        this->ui->graphicsView->endPoint = item2;
+        item2->setPen(this->ui->graphicsView->endPen);
+        item2->setBrush(this->ui->graphicsView->endBrush);
+        QPointF pos;
+        pos.setX(item->node->getX());
+        pos.setY(item->node->getY());
+        item2->setPos(pos);
+        this->ui->graphicsView->scene()->addItem(item2);
         this->end = item->node;
+    }
 }
 
 void MainWindow::parcourir()
@@ -256,7 +288,7 @@ void MainWindow::parcourir()
                 pos.setX(tmpnode->getX());
                 pos.setY(tmpnode->getY());
                 item->setPos(pos);
-                item->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+                item->setFlags(QGraphicsItem::ItemIsSelectable);
                 this->ui->graphicsView->scene()->addItem(item);
                 this->ui->graphicsView->points.push_back(item);
 
@@ -266,6 +298,7 @@ void MainWindow::parcourir()
                     QPointF pos2;
                     pos2.setX(node2->getX());
                     pos2.setY(node2->getY());
+                    this->ui->graphicsView->linePen.setWidth((*it2).road->getSpeed() / 20.0);
                     this->ui->graphicsView->lines.push_back(this->ui->graphicsView->scene()->addLine(tmpnode->getX(), tmpnode->getY(), node2->getX(), node2->getY(), this->ui->graphicsView->linePen));
                 }
             }
@@ -334,7 +367,6 @@ void MainWindow::launchSearch()
 {
     if (!this->begin || !this->end)
         return ;
-    std::cout << "New search" << std::endl;
 
     // reset scene
     for (auto it = this->ui->graphicsView->secondLines.begin(); it != this->ui->graphicsView->secondLines.end(); ++it)
@@ -361,8 +393,6 @@ void MainWindow::launchSearch()
                                                                                          cur->getY(),
                                                                                          this->ui->graphicsView->secondLinePen));
 
-        std::cout << "NODE : " << cur->getX() << ", " << cur->getY() << std::endl;
-
         prev = cur;
     }
 
@@ -384,12 +414,15 @@ void MainWindow::launchSearch()
     this->myCarIsAPlane.setNodes(this->begin, (result.size() > 1) ? ((*(result.begin()))->node) : (this->begin));
     this->myCarIsAPlane.setPos(this->begin->getX(), this->begin->getY());
 
-    this->myI->setPos(this->myCarIsAPlane.getX() - this->myI->pixmap().size().width() / 2,
-                      this->myCarIsAPlane.getY() - this->myI->pixmap().size().height() / 2);
+    this->myI->setPos(this->myCarIsAPlane.getX(),
+                      this->myCarIsAPlane.getY());
+    this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
 }
 
 void MainWindow::updateDisplayCarPos()
 {
+    std::cout << "POUET CONNARD" << std::endl;
+
     QString text;
     text = "Car data\n";
     text += "[X axis] : ";
@@ -428,6 +461,8 @@ void MainWindow::updateDisplayCarPos()
     text2 += distanceUntilNextNode;
     this->ui->carData_2->setPlainText(text2);
     this->ui->speedSlider->setValue(this->myCarIsAPlane.getSpeed());
+
+    std::cout << "{OUT} POUET CONNARD" << std::endl;
 }
 
 void MainWindow::moveCar()

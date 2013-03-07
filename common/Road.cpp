@@ -10,6 +10,16 @@ Road::~Road()
 {
 }
 
+void					Road::addNode(Node &node)
+{
+	for (auto it = _nodes.begin(); it != _nodes.end(); it++)
+	{
+		if (*it == &node)
+			return;
+	}
+	_nodes.push_back(&node);
+}
+
 void					Road::addLink(Node &node1, Node &node2, double scale)
 {
 	node1.addLink(node2, scale, this);
