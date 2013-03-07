@@ -31,34 +31,45 @@ void		Database::load()
 	this->loadLink();
 }
 
-int64_t		Database::addRoad(Road &road)
+int64_t		Database::addRoad(Road &road, bool addNode)
 {
 	if (road.getId() == -1)
 	{
-		std::string		str = "INSERT INTO roads VALUES (null, '";
-		this->oneStepRequest(str + road.getName() + "', " + Converter::toString(road.getSpeed()) + ")");
+		auto	request = this->request("INSERT INTO roads VALUES (null, ?1, ?2)");
+		request->bind(road.getName(), road.getSpeed());
+		request->next();
 		road.setId(this->getLastInsertRowID());
 		this->roads[road.getId()] = &road;
 	}
 
-	for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
-		this->addNode(**it);
+	if (addNode)
+	{
+		for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
+			this->addNode(**it, false);
+
+		for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
+			this->addNode(**it, true);
+	}
 
 	return road.getId();
 }
 
-int64_t		Database::addNode(Node &node)
+int64_t		Database::addNode(Node &node, bool addLink)
 {
 	if (node.getId() == -1)
 	{
-		std::string str = "INSERT INTO nodes VALUES (null, ";
-		this->oneStepRequest(Converter::toString(node.getX()) + ", " + Converter::toString(node.getY()) + ")");
+		auto	request = this->request("INSERT INTO nodes VALUES (null, ?1, ?2)");
+		request->bind(node.getX(), node.getY());
+		request->next();
 		node.setId(this->getLastInsertRowID());
 		this->nodes[node.getId()] = &node;
 	}
 	
-	for (auto it = node.getLinks().begin(); it != node.getLinks().end(); it++)
-		this->addLink(node, *it);
+	if (addLink)
+	{
+		for (auto it = node.getLinks().begin(); it != node.getLinks().end(); it++)
+			this->addLink(node, *it);
+	}
 
 	return node.getId();
 }
@@ -74,9 +85,10 @@ int64_t		Database::addLink(Node &node, Link &link)
 		oneway = false;
 	else
 		oneway = true;
-	std::string		str = "INSERT INTO links VALUES (null, ";
-	this->oneStepRequest(str + Converter::toString(node.getId()) + ", " + Converter::toString(link.node->getId()) + ", " + 
-		Converter::toString(link.road->getId()) + ((oneway) ? ", 1, " : ", 0, ") + Converter::toString(link.distance) + ")");
+	auto	request = this->request("INSERT INTO links VALUES (null, ?1, ?2, ?3, ?4, ?5)");
+	request->bind(node.getId(), link.node->getId(), link.road->getId(), (oneway) ? true : false, link.distance);
+	request->next();
+	std::cout << request->getLastError() << std::endl;
 	link.id = this->getLastInsertRowID();
 	link2.id = link.id;
 	this->links[link.id].push_back(link);
