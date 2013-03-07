@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     begin(NULL),
     end(NULL),
     nodeMode(NONE),
-    currentScale(1)
+    currentScale(1),
+    waitingForDecision(false)
 {
     ui->setupUi(this);
 
@@ -140,6 +141,7 @@ void MainWindow::carMoved(double distance)
 
         Node *node = this->currentPath[this->indexNode]->node;
 
+        this->begin = node;
         ++(this->indexNode);
 
         // reached goal
@@ -150,6 +152,7 @@ void MainWindow::carMoved(double distance)
             this->myCarIsAPlane.setPos(nextX, nextY);
             this->stopCar();
             this->begin = node;
+            this->end = NULL;
             this->ui->startCarButton->setEnabled(false);
             return ;
         }
@@ -162,9 +165,12 @@ void MainWindow::carMoved(double distance)
             this->addDirectionMessage("Automatically adjusting speed to " + QString::number(this->currentPath[this->indexNode]->road->getSpeed()) + ".");
         }
         this->addDirectionMessage("You are now on the road \"" + QString(this->currentPath[this->indexNode]->road->getName().c_str()) + "\".");
-//        if (this->currentPath[this->indexNode]->node->getLinks().size() > 2)
-//            this->myCarIsAPlane.setSpeed(0);
-//        else
+        if ((this->ui->followPath->isChecked() == false) && (this->currentPath[this->indexNode]->node->getLinks().size() > 2))
+        {
+            this->myCarIsAPlane.setSpeed(0);
+            this->waitingForDecision = true;
+        }
+        else
             carMoved(distance - distanceUntilNextNode);
     }
 }
@@ -172,11 +178,13 @@ void MainWindow::carMoved(double distance)
 // Gianni's functions for pathfinding
 void MainWindow::chooseBegin()
 {
+    this->waitingForDecision = false;
     this->nodeMode = MainWindow::BEGIN;
 }
 
 void MainWindow::chooseEnd()
 {
+    this->waitingForDecision = false;
     this->nodeMode = MainWindow::END;
 }
 
@@ -188,6 +196,46 @@ void MainWindow::selectNode()
     MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
     item->setSelected(false);
 
+    if (this->waitingForDecision == true)
+    {
+        Node * node = item->node;
+        Node * currentNode = this->currentPath[this->indexNode - 1]->node;
+        for (auto it = currentNode->getLinks().begin(); it != currentNode->getLinks().end(); ++it)
+        {
+            if (it->node == node)
+            {
+                if ((this->indexNode < this->currentPath.size()) && (this->currentPath[this->indexNode]->node == node))
+                {
+                    this->waitingForDecision = false;
+                    this->myCarIsAPlane.setSpeed(this->currentPath[this->indexNode]->road->getSpeed());
+                }
+                else
+                {
+                    std::cout << "Next node" << std::endl;
+                    this->begin = currentNode;
+                    // get path
+                    PathFinding &path = PathFinding::get();
+                    path.setBegin(node);
+
+                    path.resolve(this->displacementModes[this->ui->displacementMode->currentText()]);
+                    std::deque<Link *> &result = path.getResult();
+                    result.push_front(&(*it));
+
+                    // reset path
+                    for (auto it = this->ui->graphicsView->secondLines.begin(); it != this->ui->graphicsView->secondLines.end(); ++it)
+                    {
+                        this->scene->removeItem(*it);
+                    }
+                    drawPath(result);
+                    this->currentPath = result;
+                    this->indexNode = 0;
+                    this->myCarIsAPlane.setNodes(currentNode, node);
+                    this->computeRoadEvents->setNewRoad(this->currentPath);
+                }
+            }
+        }
+        return ;
+    }
     if (this->nodeMode == MainWindow::BEGIN)
     {
         QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
@@ -342,7 +390,7 @@ void MainWindow::addDirectionMessage(QString message)
 
 void MainWindow::launchSearch()
 {
-    if (!this->begin || !this->end)
+    if (!this->begin || !this->end || (this->begin == this->end))
         return ;
 
     // reset scene
@@ -357,24 +405,16 @@ void MainWindow::launchSearch()
     path.setEnd(this->end);
 
     path.resolve(this->displacementModes[this->ui->displacementMode->currentText()]);
-    std::deque<Link *> const &result = path.getResult();
+    std::deque<Link *> &result = path.getResult();
 
     this->ui->startCarButton->setEnabled(true);
 
+    this->nodeMode = Mode::NONE;
+
     // draw path
-    Node *prev = this->begin;
-    for (auto it = result.begin(); it != result.end(); ++it)
-    {
-        Node *cur = (*it)->node;
-        this->ui->graphicsView->secondLines.push_back(this->ui->graphicsView->scene()->addLine(prev->getX(),
-                                                                                         prev->getY(),
-                                                                                         cur->getX(),
-                                                                                         cur->getY(),
-                                                                                         this->ui->graphicsView->secondLinePen));
+    drawPath(result);
 
-        prev = cur;
-    }
-
+    // directions stuff
     if (this->computeRoadEvents == NULL)
         this->computeRoadEvents = new RoadReading(result);
     else
@@ -396,6 +436,23 @@ void MainWindow::launchSearch()
     this->myI->setPos(this->myCarIsAPlane.getX(),
                       this->myCarIsAPlane.getY());
     this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
+}
+
+void MainWindow::drawPath(std::deque<Link *> &result)
+{
+    // draw path
+    Node *prev = this->begin;
+    for (auto it = result.begin(); it != result.end(); ++it)
+    {
+        Node *cur = (*it)->node;
+        this->ui->graphicsView->secondLines.push_back(this->ui->graphicsView->scene()->addLine(prev->getX(),
+                                                                                               prev->getY(),
+                                                                                               cur->getX(),
+                                                                                               cur->getY(),
+                                                                                               this->ui->graphicsView->secondLinePen));
+
+        prev = cur;
+    }
 }
 
 void MainWindow::updateDisplayCarPos()
@@ -447,6 +504,8 @@ void MainWindow::moveCar()
     this->ui->startCarButton->setEnabled(false);
     this->ui->stopCarButton->setEnabled(true);
     this->myCarIsAPlane.startMoving();
+    if (this->myCarIsAPlane.getSpeed() == 0)
+        this->myCarIsAPlane.setSpeed(50);
     this->ui->speedSlider->setSliderPosition(this->myCarIsAPlane.getSpeed());
 }
 
@@ -504,6 +563,8 @@ void            MainWindow::speedChanged(int newSpeed)
 {
     if (newSpeed < 0)
         return;
+    if (newSpeed != 0)
+        this->waitingForDecision = false;
     this->myCarIsAPlane.setSpeed(newSpeed);
 }
 

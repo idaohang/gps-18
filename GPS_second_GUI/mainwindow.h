@@ -48,8 +48,10 @@ private:
     Node    *begin;
     Node    *end;
     qreal   currentScale;
+    bool    waitingForDecision;
 
 
+    void                                    drawPath(std::deque<Link *> &result);
     void                                    clearSearchComboBox();
     void                                    addDirectionMessage(QString);
     void                                    computeDirection(DirectionNext);

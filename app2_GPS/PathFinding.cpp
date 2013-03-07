@@ -63,7 +63,7 @@ void	PathFinding::algo(NodeQueue &queue, PathFinding::PathMode mode) const
 	}
 }
 
-std::deque<Link *> const &PathFinding::getResult() const
+std::deque<Link *> &PathFinding::getResult()
 {
 	return _result;
 }

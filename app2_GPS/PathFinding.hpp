@@ -19,7 +19,7 @@ public:
 	void	setBegin(Node *node);
 	void	setEnd(Node *node);
 	void	resolve(PathMode mode);
-	std::deque<Link *> const &getResult() const;
+    std::deque<Link *> &getResult();
 
 private:
 	Node	*_begin;
