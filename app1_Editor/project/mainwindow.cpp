@@ -102,6 +102,7 @@ void    MainWindow::LoadDatabase()
     QFileDialog* fd = new QFileDialog( this, "Choose your map!");
     QImage              *mapImg;
     QString *tmp;
+    std::string img;
 
     fd->setFileMode(QFileDialog::AnyFile);
 
@@ -119,8 +120,18 @@ void    MainWindow::LoadDatabase()
 
             if (Database::get().images.size() > 0)
             {
-                std::cerr << "CACCA" << (*Database::get().images.begin()).second->path.c_str() << std::endl;
-                mapImg = new QImage((*Database::get().images.begin()).second->path.c_str());
+                img = "../map/";
+                img += (*Database::get().images.rbegin()).second->path;
+                std::cerr << img << std::endl;
+                mapImg = new QImage(img.c_str());
+                this->scene->setBackgroundBrush(QBrush(*mapImg));
+                this->mapWidth = mapImg->width();
+                this->mapHeight = mapImg->height();
+                this->scene->setSceneRect(0.0, 0.0, this->mapWidth, this->mapHeight);
+                tmp = new QString(Converter::toString(this->mapWidth).c_str());
+                this->ui->txtWidth->setText(*tmp);
+                tmp = new QString(Converter::toString(this->mapHeight).c_str());
+                this->ui->txtHeight->setText(*tmp);
             }
             for (auto it = Database::get().roads.begin(); it != Database::get().roads.end(); ++it)
                 this->ui->lstRoads->addItem(QString((*it).second->getName().c_str()));
@@ -230,7 +241,8 @@ void MainWindow::on_btBg_clicked()
     QStringList list;
     QFileDialog* fd = new QFileDialog( this, "Choose a name for your map!");
     QImage              *mapImg;
-    QString *tmp;
+    QString         *tmp;
+    std::string img;
 
     fd->setFileMode(QFileDialog::ExistingFile);
     fd->setAcceptMode(QFileDialog::AcceptOpen);
@@ -248,8 +260,10 @@ void MainWindow::on_btBg_clicked()
         this->ui->txtWidth->setText(*tmp);
         tmp = new QString(Converter::toString(this->mapHeight).c_str());
         this->ui->txtHeight->setText(*tmp);
-        std::cerr << "PROUT" << std::endl;
-        Database::get().addImage(*(new Image("../../map/map-200m.png")));
+        img = list.front().toStdString();
+        img = img.substr(img.rfind("/") + 1);
+        std::cerr << img << std::endl;
+        Database::get().addImage(*(new Image(img)));
     }
 }
 
