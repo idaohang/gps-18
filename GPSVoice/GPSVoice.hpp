@@ -16,9 +16,10 @@ public:
     GPSVoice();
     ~GPSVoice();
     void    setLanguage(LanguageCountry);
-    void    updateVoice(DirectionNext);
+    void    updateVoice(DirectionNext, int elapsedTime = 100);
 private:
     LanguageCountry _language;
+    int             _time;
 };
 
 #endif // GPSVOICE_HPP
