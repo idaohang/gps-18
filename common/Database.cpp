@@ -135,7 +135,7 @@ void		Database::loadLink()
 		
 		link.id = request->get<int64_t>(0);
 		link.distance = request->get<double>(5);
-		link.node = this->nodes[request->get<int64_t>(1)];
+        link.node = this->nodes[request->get<int64_t>(1)];
 		link.road = this->roads[request->get<int64_t>(3)];
 		if (!link.node)
 			continue;
@@ -143,7 +143,7 @@ void		Database::loadLink()
 		this->links[link.id].push_back(link);
 		if (request->get<int>(4))
 		{
-			link.node = this->nodes[request->get<int64_t>(2)];
+            link.node = this->nodes[request->get<int64_t>(2)];
 			if (!link.node)
 				continue;
 			link.node->addLink(link);
