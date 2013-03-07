@@ -1,4 +1,5 @@
 #include <vector>
+#include <algorithm>
 #include "Database.hpp"
 #include "Converter.hpp"
 
@@ -14,6 +15,7 @@ bool		Database::init(std::string const &path)
 {
 	bool	ret;
 
+	this->clear();
 	ret = this->open(path);
 	if (ret == false) return false;
 	ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS roads (id INTEGER PRIMARY KEY, name TEXT, speed INTEGER)");
@@ -21,6 +23,8 @@ bool		Database::init(std::string const &path)
 	ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS nodes (id INTEGER PRIMARY KEY, x REAL, y REAL)");
 	if (ret == false) return false;
 	ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS links (id INTEGER PRIMARY KEY, idNode1 INTEGER, idNode2 INTEGER, idRoad INTEGER, oneway INTEGER, distance REAL)");
+	if (ret == false) return false;
+	ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS imgs (id INTEGER PRIMARY KEY, x INTEGER, y INTEGER, path TEXT");
 	return ret;
 }
 
@@ -29,6 +33,7 @@ void		Database::load()
 	this->loadRoad();
 	this->loadNode();
 	this->loadLink();
+	this->loadImage();
 }
 
 int64_t		Database::addRoad(Road &road, bool addNode)
@@ -94,6 +99,29 @@ int64_t		Database::addLink(Node &node, Link &link)
 	return link.id;
 }
 
+int64_t		Database::addImage(Image &img)
+{
+	if (img.id != -1)
+		return img.id;
+	auto	request = this->request("INSERT INTO imgs VALUES (null, ?1, ?2, ?3)");
+	request->bind(img.x, img.y, img.path);
+	request->next();
+	img.id = this->getLastInsertRowID();
+	this->images[img.id] = &img;
+	return img.id;
+}
+
+void		Database::clear()
+{
+	std::for_each(this->roads.begin(), this->roads.end(), [] (std::pair<int64_t, Road*> pair) {delete pair.second;});
+	this->roads.clear();
+	std::for_each(this->nodes.begin(), this->nodes.end(), [] (std::pair<int64_t, Node*> pair) {delete pair.second;});
+	this->nodes.clear();
+	std::for_each(this->images.begin(), this->images.end(), [] (std::pair<int64_t, Image*> pair) {delete pair.second;});
+	this->images.clear();
+	this->links.clear();
+}
+
 void		Database::loadRoad()
 {
 	auto	request = this->request("SELECT * FROM roads");
@@ -127,7 +155,6 @@ void		Database::loadNode()
 void		Database::loadLink()
 {
 	auto	request = this->request("SELECT * FROM links");
-    Node    *node;
 
 	while (request->next())
 	{
@@ -157,5 +184,18 @@ void		Database::loadLink()
             it2->second->addLink(link);
 			this->links[link.id].push_back(link);
 		}
+	}
+}
+
+void		Database::loadImage()
+{
+	auto	request = this->request("SELECT * FROM imgs");
+	Image	*img;
+
+	while (request->next())
+	{
+		img = new Image(request->get<std::string>(3), request->get<int>(1), request->get<int>(2));
+		img->id = request->get<int64_t>(0);
+		this->images[img->id] = img;
 	}
 }
