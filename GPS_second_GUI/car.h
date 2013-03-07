@@ -4,17 +4,21 @@
 #include <QObject>
 #include <QTimer>
 #include <QPair>
+#include "Node.hpp"
 
 class car : public QObject
 {
     Q_OBJECT
 
-    quint16                 speed; // km per hour, no miles allowed
+    double                  speed; // km per hour, no miles allowed
     double                  x;
     double                  y;
     quint16                 orientation;
     QTimer                  engine;
     quint8                  moveDistance;
+    Node                    *previousNode;
+    Node                    *nextNode;
+    bool                    moving;
 private slots:
     void                    traveled();
 public:
@@ -29,12 +33,16 @@ public:
     quint16                 getOrientation()const;
     void                    startMoving();
     void                    stopMoving();
-    void                    setSpeed(quint16);
-    quint16                 getSpeed() const;
+    void                    setSpeed(double);
+    double                  getSpeed() const;
     void                    setMoveDistance(quint16);
     quint16                 getMoveDistance() const;
+    void                    setNodes(Node *, Node *);
+    Node                    *getPreviousNode();
+    Node                    *getNextNode();
+    bool                    isMoving() const;
 signals:
-    void                    distanceTraveled(quint16);
+    void                    distanceTraveled(double);
     void                    moved();
 };
 

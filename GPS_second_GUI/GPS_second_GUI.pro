@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,6 +14,7 @@ TEMPLATE = app
 
 INCLUDEPATH += "../common"
 INCLUDEPATH += "../app2_GPS"
+INCLUDEPATH += "../GPSVoice/"
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -23,7 +25,9 @@ SOURCES += main.cpp\
     ../common/Link.cpp \
     ../common/Database.cpp \
     car.cpp \
-    ../app2_GPS/PathFinding.cpp
+    ../app2_GPS/PathFinding.cpp \
+    ../GPSVoice/RoadReading.cpp \
+    ../GPSVoice/GPSVoice.cpp
 
 HEADERS  += mainwindow.h \
     ../common/SQLiteDatabase.hpp \
@@ -36,6 +40,10 @@ HEADERS  += mainwindow.h \
     ../common/Database.hpp \
     ../common/Converter.hpp \
     car.h \
-    ../app2_GPS/PathFinding.hpp
+    ../app2_GPS/PathFinding.hpp \
+    ../GPSVoice/RoadReading.hpp \
+    ../GPSVoice/GPSVoice.hpp
 
 FORMS    += mainwindow.ui
+
+OTHER_FILES +=

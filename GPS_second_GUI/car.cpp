@@ -1,9 +1,14 @@
 #include "car.h"
 
-car::car() : speed(0), x(0.), y(0.), orientation(0), moveDistance(5)
+car::car() : speed(0), x(0.), y(0.), orientation(0), moveDistance(5), previousNode(NULL), nextNode(NULL), moving(false)
 {
     this->engine.setSingleShot(false);
     connect(&this->engine, SIGNAL(timeout()), this, SLOT(traveled()));
+}
+
+bool                    car::isMoving() const
+{
+    return moving;
 }
 
 void                    car::setX(double x)
@@ -54,29 +59,35 @@ quint16                 car::getOrientation()const
 
 void                    car::startMoving()
 {
+    this->moving = true;
     this->engine.start(100);
+    emit moved();
 }
 
 void                    car::stopMoving()
 {
+    this->moving = false;
     this->engine.stop();
+    emit moved();
 }
 
-void                    car::setSpeed(quint16 speed)
+void                    car::setSpeed(double speed)
 {
     this->speed = speed;
+    emit moved();
 }
 
-quint16                 car::getSpeed() const
+double                  car::getSpeed() const
 {
+    if (this->moving == false)
+        return 0;
     return this->speed;
 }
 
-// bouuuuhouhouhouhouhou
 void                    car::traveled()
 {
     emit moved();
-    emit distanceTraveled((this->speed > 0) ? (36000 / (1000 * this->speed)) : (0));
+    emit distanceTraveled((this->speed > 0) ? ((1000 * (double)this->speed) / 36000) : (0));
 }
 
 void                    car::setMoveDistance(quint16 move)
@@ -87,4 +98,26 @@ void                    car::setMoveDistance(quint16 move)
 quint16                 car::getMoveDistance() const
 {
     return this->moveDistance;
+}
+
+void                    car::setNodes(Node *previousNode, Node *nextNode)
+{
+    if (previousNode != NULL)
+    {
+        this->previousNode = previousNode;
+    }
+    if (nextNode != NULL)
+    {
+        this->nextNode = nextNode;
+    }
+}
+
+Node                    *car::getNextNode()
+{
+    return this->nextNode;
+}
+
+Node                    *car::getPreviousNode()
+{
+    return this->previousNode;
 }
