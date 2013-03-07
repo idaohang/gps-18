@@ -66,7 +66,7 @@ void MyGraphicsView::CancelRoadCreation()
     this->lines.clear();
 }
 
-void MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
+Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
 {
     std::deque<QGraphicsEllipseItem *>::iterator it1;
     std::deque<QGraphicsLineItem *>::iterator it2;
@@ -79,21 +79,27 @@ void MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
     for (it1 = this->points.begin(); it1 != this->points.end(); ++it1)
     {
         if (it1 == this->points.begin())
+        {
             lastPoint = new Node((*it1)->pos().x(), (*it1)->pos().y());
+            this->nodes.push_back(lastPoint);
+        }
         else
         {
             currentPoint = new Node((*it1)->pos().x(), (*it1)->pos().y());
-            road->addLink(*lastPoint, *currentPoint, 1);
+            lastPoint->addLink(*currentPoint, 1, road);
+            currentPoint->addLink(*lastPoint, 1, road);
+            //road->addLink(*lastPoint, *currentPoint, 1);
+            //this->nodes.push_back(lastPoint);
+            this->nodes.push_back(currentPoint);
+            lastPoint = currentPoint;
         }
-
         (*it1)->setOpacity(0.3);
-        lastPoint = currentPoint;
     }
     for (it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
     {
         (*it2)->setOpacity(0.3);
     }
-
     this->points.clear();
     this->lines.clear();
+    return road;
 }
