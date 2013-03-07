@@ -35,7 +35,7 @@ int64_t		Database::addRoad(Road &road, bool addNode)
 {
 	if (road.getId() == -1)
 	{
-		auto	request = this->request("INSERT INTO roads VALUES (null, '?1', ?2)");
+		auto	request = this->request("INSERT INTO roads VALUES (null, ?1, ?2)");
 		request->bind(road.getName(), road.getSpeed());
 		request->next();
 		road.setId(this->getLastInsertRowID());
@@ -88,6 +88,7 @@ int64_t		Database::addLink(Node &node, Link &link)
 	auto	request = this->request("INSERT INTO links VALUES (null, ?1, ?2, ?3, ?4, ?5)");
 	request->bind(node.getId(), link.node->getId(), link.road->getId(), (oneway) ? true : false, link.distance);
 	request->next();
+	std::cout << request->getLastError() << std::endl;
 	link.id = this->getLastInsertRowID();
 	link2.id = link.id;
 	this->links[link.id].push_back(link);
