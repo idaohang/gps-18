@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->graphicsView->setRenderHints( QPainter::Antialiasing );
     this->ui->graphicsView->setScene(this->scene);
     this->ui->graphicsView->show();
+    this->myI->setScale(0.2);
 
     // Search line and database init
     connect(this->ui->searchLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(searchLineEditTextChanged(const QString &)));
@@ -42,7 +43,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // gianni's buttons for pathfinding
     connect(this->ui->choosebegin, SIGNAL(released()), this, SLOT(chooseBegin()));
     connect(this->ui->chooseend, SIGNAL(released()), this, SLOT(chooseEnd()));
-//    connect(this->ui->searchbutton, SIGNAL(released()), this, SLOT(doPathFinding()));
     connect(this->ui->toolButton, SIGNAL(released()), this, SLOT(parcourir()));
     connect(this->ui->graphicsView->scene(), SIGNAL(selectionChanged()), this, SLOT(selectNode()));
 
@@ -126,9 +126,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     n1->addLink(*n6, 1, road2);
     n6->addLink(*n1, 1, road2);
-    this->end = n1;
-    this->begin = n4;
+    this->end = n2;
+    this->begin = n4r;
 
+
+    this->myI->setPos(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY());
 }
 
 // function called each 1/10 second
@@ -153,6 +155,10 @@ void MainWindow::carMoved(double distance)
                                                                     this->myCarIsAPlane.getMoveDistance());
     computeDirection(myNextDirection);
     this->voice->updateVoice(myNextDirection);
+
+
+    this->myI->setPos(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY());
+
 
     // reached the next node
     if (distance - distanceUntilNextNode >= 0.)
@@ -229,7 +235,7 @@ void MainWindow::parcourir()
     {
         list = fd->selectedFiles();
         sFileName = list.front();
-        if (Database::get().init(sFileName.toStdString()/*"test"*/))
+        if (Database::get().init(sFileName.toStdString()))
         {
             Database::get().load();
 

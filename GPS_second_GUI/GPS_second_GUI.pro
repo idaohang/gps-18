@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     ../GPSVoice/RoadReading.cpp \
     ../GPSVoice/GPSVoice.cpp \
     myqgraphicsellipseitem.cpp \
-    mygraphicsview.cpp
+    mygraphicsview.cpp \
+    ../common/Image.cpp
 
 HEADERS  += mainwindow.h \
     ../common/SQLiteDatabase.hpp \
@@ -46,7 +47,8 @@ HEADERS  += mainwindow.h \
     ../GPSVoice/RoadReading.hpp \
     ../GPSVoice/GPSVoice.hpp \
     myqgraphicsellipseitem.h \
-    mygraphicsview.h
+    mygraphicsview.h \
+    ../common/Image.hpp
 
 FORMS    += mainwindow.ui
 
