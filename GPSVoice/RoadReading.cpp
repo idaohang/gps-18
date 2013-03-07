@@ -58,9 +58,6 @@ DirectionNext           RoadReading::update(double positionCarX, double position
     //Update end of travel
     if ( this->_index >= this->_listRoad.size() - 1 )
     {
-        std::cout << "distanceOld = " << distanceOld << std::endl;
-        std::cout << "distance = " << distance << std::endl;
-        std::cout << "counter = " << counter << std::endl;
         if ( this->_positionCarXOld != -1 && distanceOld - counter < 0.0 )
             return ARRIVE;
         return VOID;
