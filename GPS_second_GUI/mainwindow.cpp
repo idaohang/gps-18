@@ -126,8 +126,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     n1->addLink(*n6, 1, road2);
     n6->addLink(*n1, 1, road2);
-    this->end = n2;
-    this->begin = n4r;
+    this->end = n1;
+    this->begin = n4;
 
 
     this->myI->setPos(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY());
