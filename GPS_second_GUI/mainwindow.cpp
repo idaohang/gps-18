@@ -204,13 +204,6 @@ void MainWindow::selectNode()
     MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
     item->setSelected(false);
 
-    // debug de ouf
-    std::cout << "node " << (int)item->node << std::endl;
-    for (auto it = item->node->getLinks().begin(); it != item->node->getLinks().end(); ++it)
-    {
-        std::cout << (int)((*it).node) << std::endl;
-    }
-
     if (this->nodeMode == MainWindow::BEGIN)
     {
         QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);

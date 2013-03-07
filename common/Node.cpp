@@ -106,7 +106,7 @@ std::list<Link>	&Node::getLinks()
 
 bool		Node::operator<(Node &node)
 {
-	return (this->_weigth < node.getWeigth());
+    return (this->_weigth < node.getWeigth());
 }
 
 void		Node::setId(int64_t id)
