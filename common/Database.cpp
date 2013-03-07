@@ -57,8 +57,10 @@ int64_t		Database::addNode(Node &node, bool addLink)
 {
 	if (node.getId() == -1)
 	{
-		std::string str = "INSERT INTO nodes VALUES (null, ";
-		this->oneStepRequest(Converter::toString(node.getX()) + ", " + Converter::toString(node.getY()) + ")");
+		auto	request = this->request("INSERT INTO nodes VALUES (null, ?1, ?2)");
+		request->bind(node.getX(), node.getY());
+		request->next();
+		std::cout << request->getLastError() << std::endl;
 		node.setId(this->getLastInsertRowID());
 		this->nodes[node.getId()] = &node;
 	}
