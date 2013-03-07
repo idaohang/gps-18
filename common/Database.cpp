@@ -227,7 +227,7 @@ void		Database::loadLink()
 		}
 
 		link.id = request->get<int64_t>(0);
-		link.distance = request->get<double>(5);
+        link.distance = request->get<double>(5) * 200.0 / 90.0;
         link.node = it2->second;
         link.road = road;
         it->second->addLink(link);
