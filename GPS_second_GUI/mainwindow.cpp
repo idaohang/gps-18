@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Converter.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Init scene
     this->scene = new QGraphicsScene();
     this->scene->setSceneRect(0.0, 0.0, 3793.0, 2704.0);
-    this->myImg = new QImage("..\\common\\voiture.png");
+    this->myImg = new QImage("../common/voiture.png");
     this->myI = new QGraphicsPixmapItem();
     QPixmap pix;
     pix = pix.fromImage( *(this->myImg), Qt::AutoColor );
@@ -280,6 +281,23 @@ void MainWindow::parcourir()
         if (Database::get().init(sFileName.toStdString()))
         {
             Database::get().load();
+            // load background image
+
+            if (Database::get().images.size() > 0)
+            {
+                std::string img;
+                QImage              *mapImg;
+                img = "../app1_Editor/map/";
+                img += (*Database::get().images.rbegin()).second->path;
+                mapImg = new QImage(img.c_str());
+                this->scene->setBackgroundBrush(QBrush(*mapImg));
+                int mapWidth = mapImg->width();
+                int mapHeight = mapImg->height();
+                this->scene->setSceneRect(0.0, 0.0, mapWidth, mapHeight);
+                QString *tmp = new QString(Converter::toString(mapWidth).c_str());
+                tmp = new QString(Converter::toString(mapHeight).c_str());
+            }
+            //////////////////////////
 
             for (auto it = Database::get().nodes.begin(); it != Database::get().nodes.end(); ++it)
             {
