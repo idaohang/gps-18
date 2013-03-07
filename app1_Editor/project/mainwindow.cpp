@@ -122,7 +122,6 @@ void    MainWindow::LoadDatabase()
             {
                 img = "../map/";
                 img += (*Database::get().images.rbegin()).second->path;
-                std::cerr << img << std::endl;
                 mapImg = new QImage(img.c_str());
                 this->scene->setBackgroundBrush(QBrush(*mapImg));
                 this->mapWidth = mapImg->width();
@@ -262,7 +261,6 @@ void MainWindow::on_btBg_clicked()
         this->ui->txtHeight->setText(*tmp);
         img = list.front().toStdString();
         img = img.substr(img.rfind("/") + 1);
-        std::cerr << img << std::endl;
         Database::get().addImage(*(new Image(img)));
     }
 }
