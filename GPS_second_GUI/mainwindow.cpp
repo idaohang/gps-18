@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Init scene
     this->scene = new QGraphicsScene();
     this->scene->setSceneRect(0.0, 0.0, 3793.0, 2704.0);
-    this->myImg = new QImage("C:\\Users\\hameli_p\\Pictures\\WOOT.png");
+    this->myImg = new QImage("C:\\one_piece_wallpaper_911.jpg");
     this->myI = new QGraphicsPixmapItem();
     QPixmap pix;
     pix = pix.fromImage( *(this->myImg), Qt::AutoColor );
@@ -152,7 +152,7 @@ void MainWindow::carMoved(double distance)
     DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
                                                                     this->myCarIsAPlane.getY(),
                                                                     1,
-                                                                    this->myCarIsAPlane.getMoveDistance());
+                                                                    distance);
     computeDirection(myNextDirection);
     this->voice->updateVoice(myNextDirection);
 
@@ -202,10 +202,47 @@ void MainWindow::selectNode()
     if (list.empty())
         return ;
     MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
+    item->setSelected(false);
+
+    // debug de ouf
+    std::cout << "node " << (int)item->node << std::endl;
+    for (auto it = item->node->getLinks().begin(); it != item->node->getLinks().end(); ++it)
+    {
+        std::cout << (int)((*it).node) << std::endl;
+    }
+
     if (this->nodeMode == MainWindow::BEGIN)
+    {
+        QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
+        if (this->ui->graphicsView->beginPoint)
+            this->ui->graphicsView->scene()->removeItem(this->ui->graphicsView->beginPoint);
+        this->ui->graphicsView->beginPoint = item2;
+        item2->setPen(this->ui->graphicsView->beginPen);
+        item2->setBrush(this->ui->graphicsView->beginBrush);
+        QPointF pos;
+        pos.setX(item->node->getX());
+        pos.setY(item->node->getY());
+        item2->setPos(pos);
+        this->ui->graphicsView->scene()->addItem(item2);
+
         this->begin = item->node;
+    }
     else if (this->nodeMode == MainWindow::END)
+    {
+        QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
+        if (this->ui->graphicsView->endPoint)
+            this->ui->graphicsView->scene()->removeItem(this->ui->graphicsView->endPoint);
+        this->ui->graphicsView->endPoint = item2;
+        item2->setPen(this->ui->graphicsView->endPen);
+        item2->setBrush(this->ui->graphicsView->endBrush);
+        QPointF pos;
+        pos.setX(item->node->getX());
+        pos.setY(item->node->getY());
+        item2->setPos(pos);
+        this->ui->graphicsView->scene()->addItem(item2);
+
         this->end = item->node;
+    }
 }
 
 void MainWindow::parcourir()
@@ -235,7 +272,7 @@ void MainWindow::parcourir()
                 pos.setX(tmpnode->getX());
                 pos.setY(tmpnode->getY());
                 item->setPos(pos);
-                item->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+                item->setFlags(QGraphicsItem::ItemIsSelectable);
                 this->ui->graphicsView->scene()->addItem(item);
                 this->ui->graphicsView->points.push_back(item);
 
@@ -245,6 +282,7 @@ void MainWindow::parcourir()
                     QPointF pos2;
                     pos2.setX(node2->getX());
                     pos2.setY(node2->getY());
+                    this->ui->graphicsView->linePen.setWidth((*it2).road->getSpeed() / 20.0);
                     this->ui->graphicsView->lines.push_back(this->ui->graphicsView->scene()->addLine(tmpnode->getX(), tmpnode->getY(), node2->getX(), node2->getY(), this->ui->graphicsView->linePen));
                 }
             }
