@@ -21,6 +21,7 @@ public:
 	std::list<Link> const	&getLinks() const;
 	bool					hasLinkTo(Node &node, Link *link = nullptr) const;
 	int64_t					getId() const;
+    int                     nb;
 
 	void		setX(double x);
 	void		setY(double y);

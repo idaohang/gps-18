@@ -40,7 +40,8 @@ void MainWindow::on_btFinishRoad_clicked()
     {
         this->LeaveRoadCreationMode();
         this->roads.push_back(this->ui->mapDisplay->FinishRoadCreation(this->ui->txtName->text().trimmed().toStdString(), this->ui->txtSpeed->text().toInt()));
-
+        this->ui->txtName->clear();
+        this->ui->txtSpeed->setText("90");
     }
 }
 
@@ -170,4 +171,9 @@ void MainWindow::on_btBg_clicked()
         tmp = new QString(Converter::toString(this->mapHeight).c_str());
         this->ui->txtHeight->setText(*tmp);
     }
+}
+
+void MainWindow::on_rbBothWay_toggled(bool checked)
+{
+    this->ui->mapDisplay->isBothWay = checked;
 }

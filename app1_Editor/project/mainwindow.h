@@ -35,6 +35,8 @@ private slots:
     void on_btBg_clicked();
     void SelectNode();
 
+    void on_rbBothWay_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;

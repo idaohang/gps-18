@@ -30,6 +30,7 @@ public slots:
 
 public:
     bool isRoadDrawing;
+    bool isBothWay;
     std::deque<Node*>   nodes;
     MyQGraphicsEllipseItem                  *selected;
 

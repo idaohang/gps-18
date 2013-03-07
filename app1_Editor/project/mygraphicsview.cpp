@@ -6,11 +6,12 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) :
     node(QColor(0, 0, 255, 255)),
     nodePen(QColor(0, 0, 255, 255)),
     linePen(QColor(0, 0, 255, 150)),
-    selected(0)
+    selected(0),
+    isBothWay(true)
 {
     this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     nodePen.setWidth(0);
-    linePen.setWidth(5);
+    linePen.setWidth(6);
 }
 
 void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
@@ -20,7 +21,7 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
     MyQGraphicsEllipseItem *item;
     QPointF pos;
     Node    *tmpnode;
-    int    itemExists = 0;
+    //int    itemExists = 0;
 
     QGraphicsView::mouseReleaseEvent(event);
     if (this->isRoadDrawing)
@@ -36,6 +37,7 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
             }
             if (selected)
             {
+                selected->node->nb += 1;
                 if (lastPoint)
                     this->lines.push_back(this->scene()->addLine(lastPoint->scenePos().x(), lastPoint->scenePos().y(), selected->scenePos().x(), selected->scenePos().y(), this->linePen));
                 lastPoint = selected;
@@ -60,14 +62,7 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
         {
             if (!this->points.empty())
             {
-                for (auto it = this->points.begin(); it != this->points.end(); ++it)
-                {
-                    if (*it == this->points.back())
-                    {
-                        itemExists += 1;
-                    }
-                }
-                if (itemExists < 2)
+                if (this->points.back()->node->nb <= 1)
                     this->scene()->removeItem(this->points.back());
                 this->points.pop_back();
                 if (!this->lines.empty())
@@ -112,7 +107,8 @@ Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
         {
             currentPoint = (*it1)->node;//new Node((*it1)->pos().x(), (*it1)->pos().y());
             lastPoint->addLink(*currentPoint, 1, road);
-            currentPoint->addLink(*lastPoint, 1, road);
+            if (this->isBothWay)
+                currentPoint->addLink(*lastPoint, 1, road);
             this->nodes.push_back(currentPoint);
             lastPoint = currentPoint;
         }
@@ -120,7 +116,7 @@ Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
     }
     for (auto it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
     {
-        (*it2)->setOpacity(0.3);
+        (*it2)->setOpacity(0.5);
     }
     this->points.clear();
     this->lines.clear();
