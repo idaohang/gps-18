@@ -325,7 +325,7 @@ void MainWindow::launchSearch()
 
     for (auto it = this->ui->graphicsView->secondLines.begin(); it != this->ui->graphicsView->secondLines.end(); ++it)
     {
-      //  (*it)->
+        this->scene->removeItem(*it);
     }
 
     PathFinding &path = PathFinding::get();
