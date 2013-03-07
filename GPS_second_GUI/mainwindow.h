@@ -37,9 +37,6 @@ private:
     QGraphicsPixmapItem                     *myI;
 
     quint16                                 indexNode;
-    //faut tout casser
-    Node                                    *debugBeginPosition;
-    Node                                    *destination;
 
     enum Mode
     {
@@ -62,19 +59,13 @@ public slots:
     void parcourir();
     void selectNode();
 
+    //for voice's language change
+    void            changeVoice(const QString &);
     void            speedChanged(int);
     void            searchLineEditTextChanged(const QString & text);
     void            carMoved(double);
     void            moveCar();
     void            stopCar();
-//    void            updateCarPosN();
-//    void            updateCarPosS();
-//    void            updateCarPosE();
-//    void            updateCarPosW();
-//    void            updateCarPosNW();
-//    void            updateCarPosNE();
-//    void            updateCarPosSW();
-//    void            updateCarPosSE();
     void            updateDisplayCarPos();
     void            launchSearch();
 };
