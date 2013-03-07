@@ -29,7 +29,7 @@ public slots:
 public:
     bool isRoadDrawing;
 
-private:
+public:
     QBrush  node;
     QPen    nodePen;
     QPen    linePen;

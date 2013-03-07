@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = GPS
 TEMPLATE = app
 
+INCLUDEPATH += "../../common" ".."
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -20,7 +21,9 @@ SOURCES += main.cpp\
     ../../common/Road.cpp \
     ../../common/Node.cpp \
     ../../common/Link.cpp \
-    ../../common/Database.cpp
+    ../../common/Database.cpp \
+    myqgraphicsellipseitem.cpp \
+    ../PathFinding.cpp
 
 HEADERS  += mainwindow.h \
     mygraphicsview.h \
@@ -32,6 +35,8 @@ HEADERS  += mainwindow.h \
     ../../common/Node.hpp \
     ../../common/Link.hpp \
     ../../common/Database.hpp \
-    ../../common/Converter.hpp
+    ../../common/Converter.hpp \
+    myqgraphicsellipseitem.h \
+    ../PathFinding.hpp
 
 FORMS    += mainwindow.ui
