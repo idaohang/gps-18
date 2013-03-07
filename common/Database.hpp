@@ -14,8 +14,8 @@ public:
 
 	bool		init(std::string const &path);
 	void		load();
-	int64_t		addRoad(Road &road);
-	int64_t		addNode(Node &node);
+	int64_t		addRoad(Road &road, bool addNode = true);
+	int64_t		addNode(Node &node, bool addLink = true);
 	int64_t		addLink(Node &node, Link &link);
 
 	std::map<int64_t, Road*>			roads;

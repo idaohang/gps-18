@@ -31,7 +31,7 @@ void		Database::load()
 	this->loadLink();
 }
 
-int64_t		Database::addRoad(Road &road)
+int64_t		Database::addRoad(Road &road, bool addNode)
 {
 	if (road.getId() == -1)
 	{
@@ -41,13 +41,19 @@ int64_t		Database::addRoad(Road &road)
 		this->roads[road.getId()] = &road;
 	}
 
-	for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
-		this->addNode(**it);
+	if (addNode)
+	{
+		for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
+			this->addNode(**it, false);
+
+		for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
+			this->addNode(**it, true);
+	}
 
 	return road.getId();
 }
 
-int64_t		Database::addNode(Node &node)
+int64_t		Database::addNode(Node &node, bool addLink)
 {
 	if (node.getId() == -1)
 	{
@@ -57,8 +63,11 @@ int64_t		Database::addNode(Node &node)
 		this->nodes[node.getId()] = &node;
 	}
 	
-	for (auto it = node.getLinks().begin(); it != node.getLinks().end(); it++)
-		this->addLink(node, *it);
+	if (addLink)
+	{
+		for (auto it = node.getLinks().begin(); it != node.getLinks().end(); it++)
+			this->addLink(node, *it);
+	}
 
 	return node.getId();
 }
