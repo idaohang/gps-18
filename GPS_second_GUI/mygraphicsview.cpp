@@ -9,7 +9,7 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) :
     nodePen(QColor(0, 0, 255, 255)),
     beginPen(QColor(0, 255, 0, 255)),
     endPen(QColor(255, 0, 0, 255)),
-    linePen(QColor(0, 0, 255, 50)),
+    linePen(QColor(0, 0, 255, 100)),
     secondLinePen(QColor(255, 255, 0, 255)),
     beginPoint(0),
     endPoint(0)

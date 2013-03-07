@@ -145,18 +145,11 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="stopCarButton">
-          <property name="text">
-           <string>Stop</string>
-          </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="1">
          <widget class="QPushButton" name="startCarButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Move</string>
           </property>
@@ -198,19 +191,6 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="3">
-         <widget class="QSlider" name="zoomSlider">
-          <property name="minimum">
-           <number>4</number>
-          </property>
-          <property name="maximum">
-           <number>20</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="2">
          <widget class="QCheckBox" name="followingCamera">
           <property name="text">
@@ -228,6 +208,49 @@
           </property>
           <property name="checked">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QSlider" name="zoomSlider">
+          <property name="minimum">
+           <number>4</number>
+          </property>
+          <property name="maximum">
+           <number>20</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QPushButton" name="stopCarButton">
+          <property name="text">
+           <string>Stop</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Speed</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Zoom</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -257,7 +280,6 @@
   <tabstop>chooseend</tabstop>
   <tabstop>languageList</tabstop>
   <tabstop>toolButton</tabstop>
-  <tabstop>stopCarButton</tabstop>
   <tabstop>speedSlider</tabstop>
   <tabstop>directionsOutput</tabstop>
  </tabstops>

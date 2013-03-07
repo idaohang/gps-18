@@ -169,6 +169,7 @@ void MainWindow::carMoved(double distance)
         {
             this->myCarIsAPlane.setSpeed(0);
             this->waitingForDecision = true;
+            this->nodeMode = Mode::NONE;
         }
         else
             carMoved(distance - distanceUntilNextNode);
@@ -323,7 +324,7 @@ void MainWindow::parcourir()
                     QPointF pos2;
                     pos2.setX(node2->getX());
                     pos2.setY(node2->getY());
-                    this->ui->graphicsView->linePen.setWidth((*it2).road->getSpeed() / 20.0);
+                    this->ui->graphicsView->linePen.setWidth((*it2).road->getSpeed() / 20.0 + 2);
                     this->ui->graphicsView->lines.push_back(this->ui->graphicsView->scene()->addLine(tmpnode->getX(), tmpnode->getY(), node2->getX(), node2->getY(), this->ui->graphicsView->linePen));
                 }
             }
