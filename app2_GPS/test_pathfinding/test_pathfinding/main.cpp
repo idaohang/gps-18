@@ -4,16 +4,16 @@
 
 int main()
 {
-	Node *n1 = new Node(0, 0);
-	Node *n2 = new Node(5, 0);
-	Node *n3 = new Node(2, 1);
-	Node *n4 = new Node(2, 2);
-	Node *n5 = new Node(4, 2);
-	Node *n6 = new Node(1, 4);
-	Node *n7 = new Node(3, 4);
-	Node *n8 = new Node(5, 4);
-	Node *n9 = new Node(2, 5);
-	Node *n10 = new Node(4, 5);
+	Node *n1 = new Node(0 * 100, 0 * 100);
+	Node *n2 = new Node(5 * 100, 0 * 100);
+	Node *n3 = new Node(2 * 100, 1 * 100);
+	Node *n4 = new Node(2 * 100, 2 * 100);
+	Node *n5 = new Node(4 * 100, 2 * 100);
+	Node *n6 = new Node(1 * 100, 4 * 100);
+	Node *n7 = new Node(3 * 100, 4 * 100);
+	Node *n8 = new Node(5 * 100, 4 * 100);
+	Node *n9 = new Node(2 * 100, 5 * 100);
+	Node *n10 = new Node(4 * 100, 5 * 100);
 
 	Road *road = new Road("youpi", 30);
 	Road *road2 = new Road("youpa", 120);
@@ -61,11 +61,19 @@ int main()
 		std::deque<Link *> const &result = path.getResult();
 		int i = 0;
 	}
-	path.setBegin(n2);
+	path.resolve(PathFinding::SHORTEST);
+
+	{
+		std::deque<Link *> const &result = path.getResult();
+		int i = 0;
+	}
+	while (1)
+	{
 	path.resolve(PathFinding::FASTEST);
 
 	{
 		std::deque<Link *> const &result = path.getResult();
 		int i = 0;
+	}
 	}
 }
