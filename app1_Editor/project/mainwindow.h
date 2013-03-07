@@ -7,8 +7,8 @@
 #include <deque>
 #include <QFileDialog>
 #include <QListView>
-#include "../../common/Road.hpp"
-#include "../../common/Converter.hpp"
+#include "Road.hpp"
+#include "Converter.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +24,7 @@ public:
     void EnterRoadCreationMode();
     void LeaveRoadCreationMode();
 
+
 private slots:
     void on_btAddRoad_clicked();
     void on_btFinishRoad_clicked();
@@ -31,8 +32,8 @@ private slots:
     void on_btSave_clicked();
     void on_txtWidth_returnPressed();
     void on_txtHeight_returnPressed();
-
     void on_btBg_clicked();
+    void SelectNode();
 
 private:
     Ui::MainWindow *ui;

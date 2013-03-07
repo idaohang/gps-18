@@ -9,8 +9,8 @@
 #include <deque>
 #include <iostream>
 #include <string>
-#include "../../common/Road.hpp"
-#include "../../common/Database.hpp"
+#include "Road.hpp"
+#include "Database.hpp"
 #include "myqgraphicsellipseitem.h"
 
 class MyGraphicsView : public QGraphicsView
@@ -22,7 +22,7 @@ public:
     void CancelRoadCreation();
 
 protected:
-    void mousePressEvent(QMouseEvent * event);
+    void mouseReleaseEvent(QMouseEvent * event);
 
 signals:
     
@@ -31,15 +31,14 @@ public slots:
 public:
     bool isRoadDrawing;
     std::deque<Node*>   nodes;
+    MyQGraphicsEllipseItem                  *selected;
 
 private:
     QBrush  node;
     QPen    nodePen;
     QPen    linePen;
-    std::deque<MyQGraphicsEllipseItem *>  points;
-    std::deque<QGraphicsLineItem *>  lines;
-
-
+    std::deque<MyQGraphicsEllipseItem *>    points;
+    std::deque<QGraphicsLineItem *>         lines;
 };
 
 #endif // MYGRAPHICSVIEW_H
