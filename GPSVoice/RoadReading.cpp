@@ -25,10 +25,11 @@ void        RoadReading::setNewRoad(std::deque<Link *> const listRoad )
 
 DirectionNext         RoadReading::checkNextDirection()
 {
-    qreal x1 = this->_positionCarX - this->_listRoad[_index]->node.getX();
-    qreal y1 = this->_positionCarY - this->_listRoad[_index]->node.getY();
-    qreal x2 = this->_listRoad[_index + 1]->node.getX() - this->_listRoad[_index]->node.getX();
-    qreal y2 = this->_listRoad[_index + 1]->node.getY() - this->_listRoad[_index]->node.getY();
+    std::cout << _index << std::endl;
+    qreal x1 = this->_positionCarX - this->_listRoad[_index]->node->getX();
+    qreal y1 = this->_positionCarY - this->_listRoad[_index]->node->getY();
+    qreal x2 = this->_listRoad[_index + 1]->node->getX() - this->_listRoad[_index]->node->getX();
+    qreal y2 = this->_listRoad[_index + 1]->node->getY() - this->_listRoad[_index]->node->getY();
     double angle = 180 * (qAtan2(y2, x2) - qAtan2(y1, x1)) / PI;
     std::cout << "angle = " << angle << std::endl;
     if ( angle > 135 && angle < 45)
@@ -49,17 +50,17 @@ DirectionNext           RoadReading::update(double positionCarX, double position
     double distanceOld;
     if ( _positionCarXOld != -1 )
     {
-        double xOld = _positionCarXOld - this->_listRoad[_index]->node.getX();
-        double yOld = _positionCarYOld - this->_listRoad[_index]->node.getY();
+        double xOld = _positionCarXOld - this->_listRoad[_index]->node->getX();
+        double yOld = _positionCarYOld - this->_listRoad[_index]->node->getY();
         distanceOld = ( sqrt(xOld * xOld + yOld * yOld) * scale );
-        if ( ( distanceOld - this->_listRoad[_index]->distance ) + counter > this->_listRoad[_index]->distance )
+        if ( ( distanceOld - this->_listRoad[_index]->distance ) - counter > this->_listRoad[_index]->distance )
         {
             if (this->_index >= this->_listRoad.size())
                 _index++;
         }
     }
-    double x = _positionCarX - this->_listRoad[_index]->node.getX();
-    double y = _positionCarY - this->_listRoad[_index]->node.getY();
+    double x = _positionCarX - this->_listRoad[_index]->node->getX();
+    double y = _positionCarY - this->_listRoad[_index]->node->getY();
     double distance = sqrt(x * x + y * y) * scale;
     //Update end of travel
     if (this->_index >= this->_listRoad.size())
@@ -72,14 +73,14 @@ DirectionNext           RoadReading::update(double positionCarX, double position
     if (  _positionCarXOld != -1 && distance > distanceOld )
         return TURN_BACK;
     //Update cross road
-    if ( this->_listRoad[_index]->node.getLinks().size() <= 2 )
+    if ( this->_listRoad[_index]->node->getLinks().size() <= 2 )
         return VOID;
     if ( distance < 175 )
     {
         DirectionNext   direction = checkNextDirection();
         if ( distance >= 0 && distance + counter <= 0 )
             return direction;
-        if ( distance >= 50 && distance + counter <= 50 )
+        if ( distance >= 50 && distance - counter <= 50 )
         {
             if ( direction == TURN_LEFT )
                 return TURN_LEFT_50;
@@ -88,7 +89,7 @@ DirectionNext           RoadReading::update(double positionCarX, double position
             else if ( direction == STRAIGHT )
                 return STRAIGHT_50;
         }
-        else if ( distance >= 100 && distance + counter <= 100 )
+        else if ( distance >= 100 && distance - counter <= 100 )
         {
             if ( direction == TURN_LEFT )
                 return TURN_LEFT_100;
@@ -97,7 +98,7 @@ DirectionNext           RoadReading::update(double positionCarX, double position
             else if ( direction == STRAIGHT )
                 return STRAIGHT_100;
         }
-        else if ( distance >= 150 && distance + counter <= 150 )
+        else if ( distance >= 150 && distance - counter <= 150 )
         {
             if ( direction == TURN_LEFT )
                 return TURN_LEFT_150;
