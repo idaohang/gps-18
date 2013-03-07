@@ -82,13 +82,13 @@ void MainWindow::parcourir()
     {
         list = fd->selectedFiles();
         sFileName = list.front();
-        if (Database::get().init(/*sFileName.toStdString()*/"test"))
+        if (Database::get().init(sFileName.toStdString()/*"test"*/))
         {
             Database::get().load();
             std::cout << "database found" << std::endl;
             // ajout d'un graph
 
-            Node *n1 = new Node(0 * 100, 0 * 100);
+   /*         Node *n1 = new Node(0 * 100, 0 * 100);
             Node *n2 = new Node(5 * 100, 0 * 100);
             Node *n3 = new Node(2 * 100, 1 * 100);
             Node *n4 = new Node(2 * 100, 2 * 100);
@@ -140,16 +140,27 @@ void MainWindow::parcourir()
 
             Database::get().addRoad(*road);
             Database::get().addRoad(*road2);
-            Database::get().addNode(*n1);
-            Database::get().addNode(*n2);
-            Database::get().addNode(*n3);
-            Database::get().addNode(*n4);
-            Database::get().addNode(*n5);
-            Database::get().addNode(*n6);
-            Database::get().addNode(*n7);
-            Database::get().addNode(*n8);
-            Database::get().addNode(*n9);
-            Database::get().addNode(*n10);
+            Database::get().addNode(*n1, false);
+            Database::get().addNode(*n2, false);
+            Database::get().addNode(*n3, false);
+            Database::get().addNode(*n4, false);
+            Database::get().addNode(*n5, false);
+            Database::get().addNode(*n6, false);
+            Database::get().addNode(*n7, false);
+            Database::get().addNode(*n8, false);
+            Database::get().addNode(*n9, false);
+            Database::get().addNode(*n10, false);
+
+            Database::get().addNode(*n1, true);
+            Database::get().addNode(*n2, true);
+            Database::get().addNode(*n3, true);
+            Database::get().addNode(*n4, true);
+            Database::get().addNode(*n5, true);
+            Database::get().addNode(*n6, true);
+            Database::get().addNode(*n7, true);
+            Database::get().addNode(*n8, true);
+            Database::get().addNode(*n9, true);
+            Database::get().addNode(*n10, true);*/
             ////////////////////
 
 
