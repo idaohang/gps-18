@@ -10,13 +10,14 @@
 #include <iostream>
 #include <string>
 #include "../../common/Road.hpp"
+#include "../../common/Database.hpp"
 
 class MyGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
     MyGraphicsView(QWidget *parent = 0);
-    void FinishRoadCreation(std::string const &, int);
+    Road *FinishRoadCreation(std::string const &, int);
     void CancelRoadCreation();
 
 protected:
@@ -28,6 +29,7 @@ public slots:
 
 public:
     bool isRoadDrawing;
+    std::deque<Node*>   nodes;
 
 private:
     QBrush  node;
@@ -35,6 +37,7 @@ private:
     QPen    linePen;
     std::deque<QGraphicsEllipseItem *>  points;
     std::deque<QGraphicsLineItem *>  lines;
+
 
 };
 

@@ -43,20 +43,17 @@ int64_t		Database::addRoad(Road &road)
 	this->oneStepRequest(str + road.getName() + "', " + Converter::toString(road.getSpeed()) + ")");
 	str = "INSERT INTO nodes VALUES (null, ";
 	road.setId(this->getLastInsertRowID());
-	this->roads[road.getId()] = &road;
-
+    this->roads[road.getId()] = &road;
 	for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
 	{
 		this->addNode(**it);
 		nodes.push_back(*it);
-	}
-
-	for (size_t i = 0; i < nodes.size() - 1; ++i)
+    }
+    for (size_t i = 0; i + 1 < nodes.size(); ++i)
 	{
 		if (nodes[i]->hasLinkTo(*nodes[i + 1], &link))
 			this->addLink(*nodes[i], link);
-	}
-
+    }
 	return road.getId();
 }
 
