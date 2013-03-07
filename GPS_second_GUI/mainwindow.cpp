@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Init scene
     this->scene = new QGraphicsScene();
     this->scene->setSceneRect(0.0, 0.0, 3793.0, 2704.0);
-    this->myImg = new QImage("..\\common\\voiture.png");
+    this->myImg = new QImage("../common/voiture.png");
     this->myI = new QGraphicsPixmapItem();
     QPixmap pix;
     pix = pix.fromImage( *(this->myImg), Qt::AutoColor );
