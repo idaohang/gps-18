@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1" rowspan="14">
+    <item row="0" column="1" rowspan="15">
      <widget class="MyGraphicsView" name="mapDisplay">
       <property name="minimumSize">
        <size>
@@ -34,21 +34,14 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="14">
+    <item row="0" column="0" rowspan="15">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string>Roads</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QListView" name="lvRoads">
-         <property name="minimumSize">
-          <size>
-           <width>128</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="QListWidget" name="lstRoads"/>
        </item>
       </layout>
      </widget>
@@ -104,7 +97,7 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="2">
+    <item row="3" column="2">
      <widget class="QGroupBox" name="gbRoadInfo">
       <property name="enabled">
        <bool>false</bool>
@@ -192,7 +185,7 @@
       </layout>
      </widget>
     </item>
-    <item row="3" column="2">
+    <item row="4" column="2">
      <widget class="QPushButton" name="btSave">
       <property name="minimumSize">
        <size>
@@ -202,6 +195,13 @@
       </property>
       <property name="text">
        <string>Save map</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QPushButton" name="btRemove">
+      <property name="text">
+       <string>Remove Road</string>
       </property>
      </widget>
     </item>

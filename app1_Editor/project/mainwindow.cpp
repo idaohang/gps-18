@@ -40,6 +40,7 @@ void MainWindow::on_btFinishRoad_clicked()
     {
         this->LeaveRoadCreationMode();
         this->roads.push_back(this->ui->mapDisplay->FinishRoadCreation(this->ui->txtName->text().trimmed().toStdString(), this->ui->txtSpeed->text().toInt()));
+        this->ui->lstRoads->addItem(QString(this->ui->txtName->text().trimmed()));
         this->ui->txtName->clear();
         this->ui->txtSpeed->setText("90");
     }
@@ -49,6 +50,7 @@ void MainWindow::EnterRoadCreationMode()
 {
     this->isRoadDrawing = true;
     this->ui->gbRoadInfo->setEnabled(true);
+    this->ui->lstRoads->setEnabled(false);
     this->ui->mapDisplay->setDragMode(QGraphicsView::NoDrag);
     this->ui->mapDisplay->isRoadDrawing = true;
     this->ui->btAddRoad->setEnabled(false);
@@ -58,6 +60,7 @@ void MainWindow::LeaveRoadCreationMode()
 {
     this->isRoadDrawing = false;
     this->ui->gbRoadInfo->setEnabled(false);
+    this->ui->lstRoads->setEnabled(true);
     this->ui->mapDisplay->setDragMode(QGraphicsView::ScrollHandDrag);
     this->ui->mapDisplay->isRoadDrawing = false;
     this->ui->btAddRoad->setEnabled(true);
@@ -176,4 +179,14 @@ void MainWindow::on_btBg_clicked()
 void MainWindow::on_rbBothWay_toggled(bool checked)
 {
     this->ui->mapDisplay->isBothWay = checked;
+}
+
+void MainWindow::on_lstRoads_itemSelectionChanged()
+{
+    QListWidgetItem *items = this->ui->lstRoads->selectedItems().front();
+
+    for (auto it = this->roads.begin(); it != this->roads.end(); ++it)
+    {
+
+    }
 }

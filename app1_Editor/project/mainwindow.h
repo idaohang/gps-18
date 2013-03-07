@@ -37,6 +37,8 @@ private slots:
 
     void on_rbBothWay_toggled(bool checked);
 
+    void on_lstRoads_itemSelectionChanged();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
