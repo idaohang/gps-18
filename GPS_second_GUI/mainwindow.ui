@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>698</width>
-    <height>361</height>
+    <width>759</width>
+    <height>508</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -23,305 +23,181 @@
    <double>1.000000000000000</double>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QGraphicsView" name="graphicsViewMap">
-    <property name="geometry">
-     <rect>
-      <x>325</x>
-      <y>0</y>
-      <width>371</width>
-      <height>351</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="searchLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>301</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="directionsOutput">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>180</y>
-      <width>301</width>
-      <height>141</height>
-     </rect>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAsNeeded</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="searchComboBox">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>301</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="editable">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonUp">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>10</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonRight">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>160</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonLeft">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>160</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonDown">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>310</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="languageList">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>330</y>
-      <width>171</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="startCarButton">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>10</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Move</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="stopCarButton">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>10</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stop</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonDownRight">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>310</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonUpRight">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>10</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonDownLeft">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>310</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonUpLeft">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>10</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="carData">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>100</y>
-      <width>141</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="launchSearch">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>70</y>
-      <width>41</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Search</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="displacementMode">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>91</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSlider" name="speedSlider">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>10</y>
-      <width>111</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>250</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="carData_2">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>100</y>
-      <width>141</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-   </widget>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="mainLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
+      <item>
+       <layout class="QGridLayout" name="leftLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMaximumSize</enum>
+        </property>
+        <item row="3" column="3">
+         <widget class="QPushButton" name="chooseend">
+          <property name="text">
+           <string>End</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="choosebegin">
+          <property name="text">
+           <string>Begin</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="4">
+         <widget class="QTextEdit" name="directionsOutput">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2" colspan="2">
+         <widget class="QTextEdit" name="carData_2">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="4">
+         <widget class="QLineEdit" name="searchLineEdit"/>
+        </item>
+        <item row="4" column="0" colspan="2">
+         <widget class="QTextEdit" name="carData">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="launchSearch">
+          <property name="text">
+           <string>Search</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QComboBox" name="displacementMode"/>
+        </item>
+        <item row="1" column="0" colspan="4">
+         <widget class="QComboBox" name="searchComboBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="editable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="3">
+         <widget class="QToolButton" name="toolButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0" colspan="3">
+         <widget class="QComboBox" name="languageList"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="rightLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMaximumSize</enum>
+        </property>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="stopCarButton">
+          <property name="text">
+           <string>Stop</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="startCarButton">
+          <property name="text">
+           <string>Move</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QSlider" name="speedSlider">
+          <property name="maximum">
+           <number>250</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="MyGraphicsView" name="graphicsView">
+          <property name="dragMode">
+           <enum>QGraphicsView::ScrollHandDrag</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>mygraphicsview.h</header>
+   <slots>
+    <slot>beginRoadDrawing()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>searchLineEdit</tabstop>
-  <tabstop>searchComboBox</tabstop>
   <tabstop>displacementMode</tabstop>
   <tabstop>launchSearch</tabstop>
+  <tabstop>choosebegin</tabstop>
+  <tabstop>chooseend</tabstop>
   <tabstop>languageList</tabstop>
-  <tabstop>startCarButton</tabstop>
+  <tabstop>toolButton</tabstop>
   <tabstop>stopCarButton</tabstop>
-  <tabstop>pushButtonUpLeft</tabstop>
-  <tabstop>pushButtonUp</tabstop>
-  <tabstop>pushButtonUpRight</tabstop>
-  <tabstop>pushButtonRight</tabstop>
-  <tabstop>pushButtonDownRight</tabstop>
-  <tabstop>pushButtonDown</tabstop>
-  <tabstop>pushButtonDownLeft</tabstop>
-  <tabstop>pushButtonLeft</tabstop>
-  <tabstop>carData</tabstop>
-  <tabstop>graphicsViewMap</tabstop>
+  <tabstop>speedSlider</tabstop>
   <tabstop>directionsOutput</tabstop>
  </tabstops>
  <resources/>

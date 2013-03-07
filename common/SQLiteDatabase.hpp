@@ -32,7 +32,7 @@ public:
 	std::string		getLastError() const;
 
 private:
-	SQLiteDatabase(SQLiteDatabase const &);
+    SQLiteDatabase(SQLiteDatabase const &);
 	SQLiteDatabase		&operator=(SQLiteDatabase const &);
 
 	sqlite3		*_db;

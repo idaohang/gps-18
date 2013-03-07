@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     car.cpp \
     ../app2_GPS/PathFinding.cpp \
     ../GPSVoice/RoadReading.cpp \
-    ../GPSVoice/GPSVoice.cpp
+    ../GPSVoice/GPSVoice.cpp \
+    myqgraphicsellipseitem.cpp \
+    mygraphicsview.cpp
 
 HEADERS  += mainwindow.h \
     ../common/SQLiteDatabase.hpp \
@@ -42,7 +44,9 @@ HEADERS  += mainwindow.h \
     car.h \
     ../app2_GPS/PathFinding.hpp \
     ../GPSVoice/RoadReading.hpp \
-    ../GPSVoice/GPSVoice.hpp
+    ../GPSVoice/GPSVoice.hpp \
+    myqgraphicsellipseitem.h \
+    mygraphicsview.h
 
 FORMS    += mainwindow.ui
 
