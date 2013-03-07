@@ -5,7 +5,7 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) :
     isRoadDrawing(false),
     node(QColor(0, 0, 255, 255)),
     nodePen(QColor(0, 0, 255, 255)),
-    linePen(QColor(0, 0, 255, 150)),
+    linePen(QColor(0, 0, 255, 50)),
     secondLinePen(QColor(255, 255, 0, 255))
 {
     this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
