@@ -202,9 +202,9 @@ void MainWindow::carMoved(double distance)
             this->addDirectionMessage("Automatically adjusting speed to " + QString::number(this->currentPath[this->indexNode]->road->getSpeed()) + ".");
         }
         this->addDirectionMessage("You are now on the road \"" + QString(this->currentPath[this->indexNode]->road->getName().c_str()) + "\".");
-        if (this->currentPath[this->indexNode]->node->getLinks().size() > 2)
-            this->myCarIsAPlane.setSpeed(0);
-        else
+//        if (this->currentPath[this->indexNode]->node->getLinks().size() > 2)
+//            this->myCarIsAPlane.setSpeed(0);
+//        else
             carMoved(distance - distanceUntilNextNode);
     }
 }
