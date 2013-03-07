@@ -31,15 +31,18 @@ public slots:
 public:
     bool isRoadDrawing;
     bool isBothWay;
-    std::deque<Node*>   nodes;
-    MyQGraphicsEllipseItem                  *selected;
-
-private:
     QBrush  node;
     QPen    nodePen;
     QPen    linePen;
+
+    std::deque<Node*>   nodes;
+    MyQGraphicsEllipseItem                  *selected;
     std::deque<MyQGraphicsEllipseItem *>    points;
     std::deque<QGraphicsLineItem *>         lines;
+
+private:
+
+
 };
 
 #endif // MYGRAPHICSVIEW_H

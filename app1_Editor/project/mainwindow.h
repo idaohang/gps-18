@@ -23,6 +23,7 @@ public:
     ~MainWindow();
     void EnterRoadCreationMode();
     void LeaveRoadCreationMode();
+    void LoadDatabase();
 
 
 private slots:
@@ -38,6 +39,8 @@ private slots:
     void on_rbBothWay_toggled(bool checked);
 
     void on_lstRoads_itemSelectionChanged();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -3,9 +3,9 @@
 MyGraphicsView::MyGraphicsView(QWidget *parent) :
     QGraphicsView(parent),
     isRoadDrawing(false),
-    node(QColor(0, 0, 255, 255)),
-    nodePen(QColor(0, 0, 255, 255)),
-    linePen(QColor(0, 0, 255, 150)),
+    node(QColor(50, 50, 200, 255)),
+    nodePen(QColor(50, 50, 200, 255)),
+    linePen(QColor(50, 50, 200, 255)),
     selected(0),
     isBothWay(true)
 {
@@ -115,7 +115,7 @@ Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
             this->nodes.push_back(currentPoint);
             lastPoint = currentPoint;
         }
-        (*it1)->setOpacity(0.3);
+        //(*it1)->setBrush(QBrush(QColor(50, 50, 100)));
     }
     /*if (this->points.back()->node->nb > 1)
     {
@@ -133,7 +133,7 @@ Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
     }*/
     for (auto it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
     {
-        (*it2)->setOpacity(0.5);
+        //(*it2)->setPen(QPen(QColor(50, 50, 100)));
     }
     std::cerr << this->nodes.size() << std::endl;
     this->points.clear();

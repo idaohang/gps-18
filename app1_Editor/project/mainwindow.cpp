@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsPixmapItem *myI = new QGraphicsPixmapItem();
     QImage              *mapImg = new QImage("../map/map-200m.png");
 
+    this->databasePath = "";
     this->isRoadDrawing = false;
     this->scene = new QGraphicsScene();
     this->scene->setSceneRect(0.0, 0.0, 1000.0, 1000.0);
@@ -43,6 +44,21 @@ void MainWindow::on_btFinishRoad_clicked()
         this->ui->lstRoads->addItem(QString(this->ui->txtName->text().trimmed()));
         this->ui->txtName->clear();
         this->ui->txtSpeed->setText("90");
+
+        for (auto it = this->roads.begin(); it != this->roads.end(); ++it)
+        {
+            Database::get().addRoad(*(*it));
+        }
+        this->roads.clear();
+        for (auto it = this->ui->mapDisplay->nodes.begin(); it != this->ui->mapDisplay->nodes.end(); ++it)
+        {
+            Database::get().addNode(*(*it), false);
+        }
+        for (auto it = this->ui->mapDisplay->nodes.begin(); it != this->ui->mapDisplay->nodes.end(); ++it)
+        {
+            Database::get().addNode(*(*it), true);
+        }
+        this->ui->mapDisplay->nodes.clear();
     }
 }
 
@@ -76,6 +92,65 @@ void MainWindow::SelectNode()
             return ;
         MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
         this->ui->mapDisplay->selected = item;
+    }
+}
+
+void    MainWindow::LoadDatabase()
+{
+    QString sFileName;
+    QStringList list;
+    QFileDialog* fd = new QFileDialog( this, "Choose your map!");
+    QImage              *mapImg;
+    QString *tmp;
+
+    fd->setFileMode(QFileDialog::AnyFile);
+
+    this->ui->mapDisplay->scene()->clear();
+    this->ui->lstRoads->clear();
+    this->roads.clear();
+    if ( fd->exec() == QDialog::Accepted )
+    {
+        list = fd->selectedFiles();
+        sFileName = list.front();
+        if (Database::get().init(sFileName.toStdString()))
+        {
+            Database::get().load();
+            this->databasePath = sFileName.toStdString();
+
+            if (Database::get().images.size() > 0)
+            {
+                std::cerr << "CACCA" << (*Database::get().images.begin()).second->path.c_str() << std::endl;
+                mapImg = new QImage((*Database::get().images.begin()).second->path.c_str());
+            }
+            for (auto it = Database::get().roads.begin(); it != Database::get().roads.end(); ++it)
+                this->ui->lstRoads->addItem(QString((*it).second->getName().c_str()));
+            for (auto it = Database::get().nodes.begin(); it != Database::get().nodes.end(); ++it)
+            {
+                Node *tmpnode = it->second;
+
+                MyQGraphicsEllipseItem *item = new MyQGraphicsEllipseItem(-4, -4, 8, 8, tmpnode);
+                item->setPen(this->ui->mapDisplay->nodePen);
+                item->setBrush(this->ui->mapDisplay->node);
+                QPointF pos;
+                pos.setX(tmpnode->getX());
+                pos.setY(tmpnode->getY());
+                item->setPos(pos);
+                item->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+                this->ui->mapDisplay->scene()->addItem(item);
+                this->ui->mapDisplay->points.push_back(item);
+
+                for (auto it2 = tmpnode->getLinks().begin(); it2 != tmpnode->getLinks().end(); ++it2)
+                {
+                    Node *node2 = (*it2).node;
+                    QPointF pos2;
+                    pos2.setX(node2->getX());
+                    pos2.setY(node2->getY());
+                    this->ui->mapDisplay->lines.push_back(this->ui->mapDisplay->scene()->addLine(tmpnode->getX(), tmpnode->getY(), node2->getX(), node2->getY(), this->ui->mapDisplay->linePen));
+                }
+            }
+            this->ui->mapDisplay->points.clear();
+            this->ui->mapDisplay->lines.clear();
+        }
     }
 }
 
@@ -173,6 +248,8 @@ void MainWindow::on_btBg_clicked()
         this->ui->txtWidth->setText(*tmp);
         tmp = new QString(Converter::toString(this->mapHeight).c_str());
         this->ui->txtHeight->setText(*tmp);
+        std::cerr << "PROUT" << std::endl;
+        Database::get().addImage(*(new Image("../../map/map-200m.png")));
     }
 }
 
@@ -188,5 +265,14 @@ void MainWindow::on_lstRoads_itemSelectionChanged()
     for (auto it = this->roads.begin(); it != this->roads.end(); ++it)
     {
 
+    }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    this->LoadDatabase();
+    if (QFile(QString(this->databasePath.c_str())).exists())
+    {
+        this->ui->btAddRoad->setEnabled(true);
     }
 }
