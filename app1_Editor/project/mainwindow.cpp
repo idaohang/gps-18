@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     myI->setPixmap(pix);
     this->ui->mapDisplay->setScene(this->scene);
     this->ui->mapDisplay->show();
+
+    connect(this->ui->mapDisplay->scene(), SIGNAL(selectionChanged()), this, SLOT(SelectNode()));
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +60,19 @@ void MainWindow::LeaveRoadCreationMode()
     this->ui->mapDisplay->setDragMode(QGraphicsView::ScrollHandDrag);
     this->ui->mapDisplay->isRoadDrawing = false;
     this->ui->btAddRoad->setEnabled(true);
+}
+
+void MainWindow::SelectNode()
+{
+    QList<QGraphicsItem *> &list = this->ui->mapDisplay->scene()->selectedItems();
+
+    if (this->isRoadDrawing)
+    {
+        if (list.empty())
+            return ;
+        MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
+        this->ui->mapDisplay->selected = item;
+    }
 }
 
 void MainWindow::on_btCancel_clicked()
