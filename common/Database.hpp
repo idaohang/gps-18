@@ -5,6 +5,7 @@
 #include "Singleton.hpp"
 #include "SQLiteDatabase.hpp"
 #include "Road.hpp"
+#include "Image.hpp"
 
 class Database : public SQLiteDatabase, public Singleton<Database>
 {
@@ -17,13 +18,17 @@ public:
 	int64_t		addRoad(Road &road, bool addNode = true);
 	int64_t		addNode(Node &node, bool addLink = true);
 	int64_t		addLink(Node &node, Link &link);
+	int64_t		addImage(Image &image);
 
 	std::map<int64_t, Road*>			roads;
 	std::map<int64_t, Node*>			nodes;
 	std::map<int64_t, std::list<Link>>	links;
+	std::map<int64_t, Image*>			images;
 
 private:
+	void		clear();
 	void		loadRoad();
 	void		loadNode();
 	void		loadLink();
+	void		loadImage();
 };

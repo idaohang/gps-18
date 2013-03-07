@@ -85,6 +85,8 @@ SQLiteDatabase::~SQLiteDatabase()
 
 bool			SQLiteDatabase::open(std::string const &path, SQLiteDatabase::OpenMode mode)
 {
+	if (_db == nullptr)
+		this->close();
 	int			realmode = SQLITE_OPEN_FULLMUTEX;
 
 	if (mode & READWRITECREATE)
