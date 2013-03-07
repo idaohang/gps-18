@@ -11,6 +11,7 @@ public:
 	Road(std::string const &name = "", int speed = 90);
 	~Road();
 
+	void				addNode(Node &node);
 	void				addLink(Node &node1, Node &node2, double scale);
 
 	std::string const		&getName() const;
