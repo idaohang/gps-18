@@ -111,6 +111,59 @@ int64_t		Database::addImage(Image &img)
 	return img.id;
 }
 
+void		Database::deleteRoad(Road &road)
+{
+	if (road.getId() == -1)
+		return;
+	auto	request = this->request("DELETE FROM roads WHERE id=?1");
+	request->bind(road.getId());
+	request->next();
+	auto	i = this->roads.find(road.getId());
+	if (i != this->roads.end())
+		this->roads.erase(i);
+	road.setId(-1);
+
+	for (auto it = road.getNodes().begin(); it != road.getNodes().end(); it++)
+		this->deleteNode(**it, &road);
+}
+
+void		Database::deleteNode(Node &node, Road *road)
+{
+	if (node.getId() == -1)
+		return;
+	bool		del = true;
+	for (auto it = node.getLinks().begin(); it != node.getLinks().end(); it++)
+	{
+		if (it->road != road)
+			del = false;
+		else
+			this->deleteLink(*it);
+	}
+
+	if (!del)
+		return;
+	auto	request = this->request("DELETE FROM nodes WHERE id=?1");
+	request->bind(node.getId());
+	request->next();
+	auto	i = this->nodes.find(node.getId());
+	if (i != this->nodes.end())
+		this->nodes.erase(i);
+	node.setId(-1);
+}
+
+void		Database::deleteLink(Link &link)
+{
+	if (link.id == -1)
+		return;
+	auto	request = this->request("DELETE FROM links WHERE id=?1");
+	request->bind(link.id);
+	request->next();
+	auto	i = this->links.find(link.id);
+	if (i != this->links.end())
+		this->links.erase(i);
+	link.id = -1;
+}
+
 void		Database::clear()
 {
 	std::for_each(this->roads.begin(), this->roads.end(), [] (std::pair<int64_t, Road*> pair) {delete pair.second;});
@@ -167,16 +220,19 @@ void		Database::loadLink()
         Road    *road = nullptr;
         if (itroad != this->roads.end())
             road = itroad->second;
+		if (road)
+		{
+			road->addNode(*it->second);
+			road->addNode(*it2->second);
+		}
 
 		link.id = request->get<int64_t>(0);
 		link.distance = request->get<double>(5);
         link.node = it2->second;
         link.road = road;
-		if (!link.node)
-			continue;
         it->second->addLink(link);
 		this->links[link.id].push_back(link);
-        if (request->get<bool>(4))
+        if (!request->get<bool>(4))
 		{
             link.node = it->second;
 			if (!link.node)
