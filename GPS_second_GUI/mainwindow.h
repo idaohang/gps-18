@@ -61,7 +61,6 @@ public slots:
     void chooseEnd();
     void parcourir();
     void selectNode();
-    void doPathFinding();
 
     void            speedChanged(int);
     void            searchLineEditTextChanged(const QString & text);

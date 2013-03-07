@@ -195,21 +195,6 @@ void MainWindow::chooseEnd()
     this->nodeMode = MainWindow::END;
 }
 
-void MainWindow::doPathFinding()
-{
-    if (!this->begin || !this->end)
-        return ;
-    PathFinding::get().setBegin(this->begin);
-    PathFinding::get().setEnd(this->end);
-    PathFinding::get().resolve(PathFinding::FASTEST);
-    std::deque<Link *> const &list = PathFinding::get().getResult();
-    Node *prev = this->begin;
-    for (auto it = list.begin(); it != list.end(); ++it)
-    {
-        Node *cur = (*it)->node;
-    }
-}
-
 void MainWindow::selectNode()
 {
     std::cout << "select" << std::endl;
@@ -217,10 +202,39 @@ void MainWindow::selectNode()
     if (list.empty())
         return ;
     MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
+    item->setSelected(false);
     if (this->nodeMode == MainWindow::BEGIN)
+    {
+        QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
+        if (this->ui->graphicsView->beginPoint)
+            this->ui->graphicsView->scene()->removeItem(this->ui->graphicsView->beginPoint);
+        this->ui->graphicsView->beginPoint = item2;
+        item2->setPen(this->ui->graphicsView->beginPen);
+        item2->setBrush(this->ui->graphicsView->beginBrush);
+        QPointF pos;
+        pos.setX(item->node->getX());
+        pos.setY(item->node->getY());
+        item2->setPos(pos);
+        this->ui->graphicsView->scene()->addItem(item2);
+
         this->begin = item->node;
+    }
     else if (this->nodeMode == MainWindow::END)
+    {
+        QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
+        if (this->ui->graphicsView->endPoint)
+            this->ui->graphicsView->scene()->removeItem(this->ui->graphicsView->endPoint);
+        this->ui->graphicsView->endPoint = item2;
+        item2->setPen(this->ui->graphicsView->endPen);
+        item2->setBrush(this->ui->graphicsView->endBrush);
+        QPointF pos;
+        pos.setX(item->node->getX());
+        pos.setY(item->node->getY());
+        item2->setPos(pos);
+        this->ui->graphicsView->scene()->addItem(item2);
+
         this->end = item->node;
+    }
 }
 
 void MainWindow::parcourir()
@@ -250,7 +264,7 @@ void MainWindow::parcourir()
                 pos.setX(tmpnode->getX());
                 pos.setY(tmpnode->getY());
                 item->setPos(pos);
-                item->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+                item->setFlags(QGraphicsItem::ItemIsSelectable);
                 this->ui->graphicsView->scene()->addItem(item);
                 this->ui->graphicsView->points.push_back(item);
 
