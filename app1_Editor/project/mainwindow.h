@@ -6,7 +6,9 @@
 #include <QGraphicsScene>
 #include <deque>
 #include <QFileDialog>
+#include <QListView>
 #include "../../common/Road.hpp"
+#include "../../common/Converter.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +29,10 @@ private slots:
     void on_btFinishRoad_clicked();
     void on_btCancel_clicked();
     void on_btSave_clicked();
+    void on_txtWidth_returnPressed();
+    void on_txtHeight_returnPressed();
+
+    void on_btBg_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -34,6 +40,9 @@ private:
     bool            isRoadDrawing;
     std::deque<Road*>   roads;
     std::string     databasePath;
+    std::string     backgroundPath;
+    int             mapWidth;
+    int             mapHeight;
 };
 
 #endif // MAINWINDOW_H

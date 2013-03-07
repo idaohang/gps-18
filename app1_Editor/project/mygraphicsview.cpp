@@ -81,6 +81,7 @@ Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
         if (it1 == this->points.begin())
         {
             lastPoint = new Node((*it1)->pos().x(), (*it1)->pos().y());
+            this->nodes.push_back(lastPoint);
         }
         else
         {
@@ -88,7 +89,7 @@ Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
             lastPoint->addLink(*currentPoint, 1, road);
             currentPoint->addLink(*lastPoint, 1, road);
             //road->addLink(*lastPoint, *currentPoint, 1);
-            this->nodes.push_back(lastPoint);
+            //this->nodes.push_back(lastPoint);
             this->nodes.push_back(currentPoint);
             lastPoint = currentPoint;
         }
