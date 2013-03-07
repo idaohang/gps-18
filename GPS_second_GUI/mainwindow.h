@@ -31,12 +31,12 @@ private:
     car                                     myCarIsAPlane;
     QMap<QString, PathFinding::PathMode>    displacementModes;
     std::deque<Link *>                      currentPath;
-    std::deque<Link *>::const_iterator      currentNodeIndex;
     RoadReading                             *computeRoadEvents;
     GPSVoice                                *voice;
     QImage                                  *myImg;
     QGraphicsPixmapItem                     *myI;
 
+    quint16                                 indexNode;
     //faut tout casser
     Node                                    *debugBeginPosition;
     Node                                    *destination;

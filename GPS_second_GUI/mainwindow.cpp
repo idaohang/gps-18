@@ -49,14 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->stopCarButton->setEnabled(false);
     connect(this->ui->stopCarButton, SIGNAL(clicked()), this, SLOT(stopCar()));
     connect(this->ui->startCarButton, SIGNAL(clicked()), this, SLOT(moveCar()));
-//    connect(this->ui->pushButtonUp, SIGNAL(pressed()), this, SLOT(updateCarPosN()));
-//    connect(this->ui->pushButtonDown, SIGNAL(pressed()), this, SLOT(updateCarPosS()));
-//    connect(this->ui->pushButtonRight, SIGNAL(pressed()), this, SLOT(updateCarPosE()));
-//    connect(this->ui->pushButtonLeft, SIGNAL(pressed()), this, SLOT(updateCarPosW()));
-//    connect(this->ui->pushButtonUpLeft, SIGNAL(pressed()), this, SLOT(updateCarPosNW()));
-//    connect(this->ui->pushButtonUpRight, SIGNAL(pressed()), this, SLOT(updateCarPosNE()));
-//    connect(this->ui->pushButtonDownLeft, SIGNAL(pressed()), this, SLOT(updateCarPosSW()));
-//    connect(this->ui->pushButtonDownRight, SIGNAL(pressed()), this, SLOT(updateCarPosSE()));
     this->updateDisplayCarPos();
     connect(&this->myCarIsAPlane, SIGNAL(moved()), this, SLOT(updateDisplayCarPos()));
 
@@ -129,8 +121,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->end = n1;
     this->begin = n4;
 
-
-    this->myI->setPos(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY());
+    this->myI->setRotation(45);
+    this->myI->setZValue(100);
+    QSize size = this->myI->pixmap().size();
+    this->myI->setPos(this->scene->width() / 2 - size.width() / 2, this->scene->height() / 2 - size.height() / 2);
 }
 
 // function called each 1/10 second
@@ -149,15 +143,16 @@ void MainWindow::carMoved(double distance)
     this->myCarIsAPlane.setPos(newPosX, newPosY);
 
     // directions
-    DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
-                                                                    this->myCarIsAPlane.getY(),
-                                                                    1,
-                                                                    distance);
-    computeDirection(myNextDirection);
-    this->voice->updateVoice(myNextDirection);
+//    DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
+//                                                                    this->myCarIsAPlane.getY(),
+//                                                                    1,
+//                                                                    distance);
+//    computeDirection(myNextDirection);
+//    this->voice->updateVoice(myNextDirection);
 
 
-    this->myI->setPos(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY());
+    this->myI->setPos(this->myCarIsAPlane.getX() - this->myI->pixmap().size().width() / 2,
+                      this->myCarIsAPlane.getY() - this->myI->pixmap().size().height() / 2);
 
 
     // reached the next node
@@ -165,11 +160,13 @@ void MainWindow::carMoved(double distance)
     {
         double nextX;
         double nextY;
-        nextX = (*(this->currentNodeIndex))->node->getX();
-        nextY = (*(this->currentNodeIndex))->node->getY();
-        ++this->currentNodeIndex;
+        nextX = this->currentPath[this->indexNode]->node->getX();
+        nextY = this->currentPath[this->indexNode]->node->getY();
+
+        ++(this->indexNode);
+
         // reached goal
-        if (this->currentNodeIndex == this->currentPath.end())
+        if (this->indexNode >= this->currentPath.size())
         {
             this->addDirectionMessage("You have arrived at your destination.");
             this->myCarIsAPlane.setNodes(NULL, NULL);
@@ -179,9 +176,18 @@ void MainWindow::carMoved(double distance)
             return ;
         }
         this->addDirectionMessage("Checkpoint reached.");
-        this->myCarIsAPlane.setNodes(this->myCarIsAPlane.getNextNode(), (*(this->currentNodeIndex))->node);
-        this->myCarIsAPlane.setSpeed((*(this->currentNodeIndex))->road->getSpeed());
-        carMoved(distance - distanceUntilNextNode);
+        this->myCarIsAPlane.setNodes(this->myCarIsAPlane.getNextNode(), this->currentPath[this->indexNode]->node);
+
+        if (this->ui->autoAdjustSpeed->isChecked())
+        {
+            this->myCarIsAPlane.setSpeed(this->currentPath[this->indexNode]->road->getSpeed());
+            this->addDirectionMessage("Automatically adjusting speed to " + QString::number(this->currentPath[this->indexNode]->road->getSpeed()) + ".");
+        }
+        this->addDirectionMessage("You are now on the road \"" + QString(this->currentPath[this->indexNode]->road->getName().c_str()) + "\".");
+        if (this->currentPath[this->indexNode]->node->getLinks().size() > 2)
+            this->myCarIsAPlane.setSpeed(0);
+        else
+            carMoved(distance - distanceUntilNextNode);
     }
 }
 
@@ -213,7 +219,6 @@ void MainWindow::doPathFinding()
 
 void MainWindow::selectNode()
 {
-    std::cout << "select" << std::endl;
     QList<QGraphicsItem *> &list = this->ui->graphicsView->scene()->selectedItems();
     if (list.empty())
         return ;
@@ -329,20 +334,23 @@ void MainWindow::launchSearch()
 {
     if (!this->begin || !this->end)
         return ;
+    std::cout << "New search" << std::endl;
 
+    // reset scene
     for (auto it = this->ui->graphicsView->secondLines.begin(); it != this->ui->graphicsView->secondLines.end(); ++it)
     {
         this->scene->removeItem(*it);
     }
 
+    // get path
     PathFinding &path = PathFinding::get();
-
     path.setBegin(this->begin);
     path.setEnd(this->end);
-    path.resolve(this->displacementModes[this->ui->displacementMode->currentText()]);
 
+    path.resolve(this->displacementModes[this->ui->displacementMode->currentText()]);
     std::deque<Link *> const &result = path.getResult();
 
+    // draw path
     Node *prev = this->begin;
     for (auto it = result.begin(); it != result.end(); ++it)
     {
@@ -352,6 +360,9 @@ void MainWindow::launchSearch()
                                                                                          cur->getX(),
                                                                                          cur->getY(),
                                                                                          this->ui->graphicsView->secondLinePen));
+
+        std::cout << "NODE : " << cur->getX() << ", " << cur->getY() << std::endl;
+
         prev = cur;
     }
 
@@ -361,15 +372,20 @@ void MainWindow::launchSearch()
         this->computeRoadEvents->setNewRoad(result);
 
     this->currentPath = result;
-    this->currentNodeIndex = result.begin();
+    this->indexNode = 0;
 
-    this->myCarIsAPlane.setSpeed((*(this->currentNodeIndex))->road->getSpeed());
-    this->addDirectionMessage("You are now on the road \"" + QString((*(this->currentNodeIndex))->road->getName().c_str()) + "\".");
-    this->addDirectionMessage("Automatically adjusting speed to " + QString::number((*(this->currentNodeIndex))->road->getSpeed()) + ".");
+    if (this->ui->autoAdjustSpeed->isChecked())
+    {
+        this->myCarIsAPlane.setSpeed(this->currentPath[this->indexNode]->road->getSpeed());
+        this->addDirectionMessage("Automatically adjusting speed to " + QString::number(this->currentPath[this->indexNode]->road->getSpeed()) + ".");
+    }
+    this->addDirectionMessage("You are now on the road \"" + QString(this->currentPath[this->indexNode]->road->getName().c_str()) + "\".");
 
     this->myCarIsAPlane.setNodes(this->begin, (result.size() > 1) ? ((*(result.begin()))->node) : (this->begin));
     this->myCarIsAPlane.setPos(this->begin->getX(), this->begin->getY());
 
+    this->myI->setPos(this->myCarIsAPlane.getX() - this->myI->pixmap().size().width() / 2,
+                      this->myCarIsAPlane.getY() - this->myI->pixmap().size().height() / 2);
 }
 
 void MainWindow::updateDisplayCarPos()
