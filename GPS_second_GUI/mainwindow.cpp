@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Init scene
     this->scene = new QGraphicsScene();
     this->scene->setSceneRect(0.0, 0.0, 3793.0, 2704.0);
-    this->myImg = new QImage("C:\\Users\\hameli_p\\Pictures\\WOOT.png");
+    this->myImg = new QImage("..\\common\\voiture.png");
     this->myI = new QGraphicsPixmapItem();
     QPixmap pix;
     pix = pix.fromImage( *(this->myImg), Qt::AutoColor );
@@ -25,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->graphicsView->setRenderHints( QPainter::Antialiasing );
     this->ui->graphicsView->setScene(this->scene);
     this->ui->graphicsView->show();
-    this->myI->setScale(0.2);
 
     // Search line and database init
     connect(this->ui->searchLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(searchLineEditTextChanged(const QString &)));
@@ -126,6 +125,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     n1->addLink(*n6, 1, road2);
     n6->addLink(*n1, 1, road2);
+
     this->end = n1;
     this->begin = n4;
 
@@ -152,7 +152,7 @@ void MainWindow::carMoved(double distance)
     DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
                                                                     this->myCarIsAPlane.getY(),
                                                                     1,
-                                                                    this->myCarIsAPlane.getMoveDistance());
+                                                                    distance);
     computeDirection(myNextDirection);
     this->voice->updateVoice(myNextDirection);
 
@@ -168,6 +168,7 @@ void MainWindow::carMoved(double distance)
         nextX = (*(this->currentNodeIndex))->node->getX();
         nextY = (*(this->currentNodeIndex))->node->getY();
         ++this->currentNodeIndex;
+        // reached goal
         if (this->currentNodeIndex == this->currentPath.end())
         {
             this->addDirectionMessage("You have arrived at your destination.");
@@ -177,9 +178,9 @@ void MainWindow::carMoved(double distance)
             this->stopCar();
             return ;
         }
-        else
-            this->addDirectionMessage("Checkpoint reached.");
+        this->addDirectionMessage("Checkpoint reached.");
         this->myCarIsAPlane.setNodes(this->myCarIsAPlane.getNextNode(), (*(this->currentNodeIndex))->node);
+        this->myCarIsAPlane.setSpeed((*(this->currentNodeIndex))->road->getSpeed());
         carMoved(distance - distanceUntilNextNode);
     }
 }
@@ -362,6 +363,10 @@ void MainWindow::launchSearch()
     this->currentPath = result;
     this->currentNodeIndex = result.begin();
 
+    this->myCarIsAPlane.setSpeed((*(this->currentNodeIndex))->road->getSpeed());
+    this->addDirectionMessage("You are now on the road \"" + QString((*(this->currentNodeIndex))->road->getName().c_str()) + "\".");
+    this->addDirectionMessage("Automatically adjusting speed to " + QString::number((*(this->currentNodeIndex))->road->getSpeed()) + ".");
+
     this->myCarIsAPlane.setNodes(this->begin, (result.size() > 1) ? ((*(result.begin()))->node) : (this->begin));
     this->myCarIsAPlane.setPos(this->begin->getX(), this->begin->getY());
 
@@ -406,6 +411,7 @@ void MainWindow::updateDisplayCarPos()
     text2 += "[Distance until next node] : ";
     text2 += distanceUntilNextNode;
     this->ui->carData_2->setPlainText(text2);
+    this->ui->speedSlider->setValue(this->myCarIsAPlane.getSpeed());
 }
 
 void MainWindow::moveCar()
@@ -467,82 +473,6 @@ void MainWindow::clearSearchComboBox()
         this->ui->searchComboBox->removeItem(0);
     }
 }
-
-//void            MainWindow::updateCarPosN()
-//{
-//    if (!this->ui->pushButtonUp->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosN()));
-//    this->myCarIsAPlane.setY(this->myCarIsAPlane.getY() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosS()
-//{
-//    if (!this->ui->pushButtonDown->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosS()));
-//    this->myCarIsAPlane.setY(this->myCarIsAPlane.getY() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosE()
-//{
-//    if (!this->ui->pushButtonRight->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosE()));
-//    this->myCarIsAPlane.setX(this->myCarIsAPlane.getX() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosW()
-//{
-//    if (!this->ui->pushButtonLeft->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosW()));
-//    this->myCarIsAPlane.setX(this->myCarIsAPlane.getX() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosNW()
-//{
-//    if (!this->ui->pushButtonUpLeft->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosNW()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() - this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosNE()
-//{
-//    if (!this->ui->pushButtonUpRight->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosNE()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() + this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosSW()
-//{
-//    if (!this->ui->pushButtonDownLeft->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosSW()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() - this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosSE()
-//{
-//    if (!this->ui->pushButtonDownRight->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosSE()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() + this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
 
 void            MainWindow::speedChanged(int newSpeed)
 {
