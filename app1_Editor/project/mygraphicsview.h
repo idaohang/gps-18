@@ -11,6 +11,7 @@
 #include <string>
 #include "../../common/Road.hpp"
 #include "../../common/Database.hpp"
+#include "myqgraphicsellipseitem.h"
 
 class MyGraphicsView : public QGraphicsView
 {
@@ -35,7 +36,7 @@ private:
     QBrush  node;
     QPen    nodePen;
     QPen    linePen;
-    std::deque<QGraphicsEllipseItem *>  points;
+    std::deque<MyQGraphicsEllipseItem *>  points;
     std::deque<QGraphicsLineItem *>  lines;
 
 

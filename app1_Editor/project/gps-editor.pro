@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     ../../common/Link.cpp \
     ../../common/Database.cpp \
     ../../common/SQLiteDatabase.cpp \
-    ../../common/sqlite3.c
+    ../../common/sqlite3.c \
+    myqgraphicsellipseitem.cpp
 
 HEADERS  += mainwindow.h \
     ../../common/Road.hpp \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     ../../common/sqlite3.h \
     ../../common/Singleton.hpp \
     ../../common/Converter.hpp \
-    mygraphicsview.h
+    mygraphicsview.h \
+    myqgraphicsellipseitem.h
 
 FORMS    += \
     mainwindow.ui

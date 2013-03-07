@@ -16,6 +16,7 @@ void MyGraphicsView::mousePressEvent(QMouseEvent * event)
 {
     QPointF clickPos;
     QGraphicsEllipseItem *lastPoint;
+    QGraphicsEllipseItem *item = new MyQGraphicsEllipseItem(-4, -4, 8, 8, tmpnode);
 
     QGraphicsView::mousePressEvent(event);
     if (this->isRoadDrawing)
@@ -29,6 +30,16 @@ void MyGraphicsView::mousePressEvent(QMouseEvent * event)
                 this->lines.push_back(this->scene()->addLine(lastPoint->scenePos().x(), lastPoint->scenePos().y(), clickPos.x(), clickPos.y(), this->linePen));
 
             }
+            QGraphicsEllipseItem *item = new MyQGraphicsEllipseItem(-4, -4, 8, 8, tmpnode);
+           item->setPen(this->ui->graphicsView->nodePen);
+           item->setBrush(this->ui->graphicsView->node);
+           QPointF pos;
+           pos.setX(tmpnode->getX());
+           pos.setY(tmpnode->getY());
+           item->setPos(pos);
+           item->setFlags(/*QGraphicsItem::ItemIsMovable | */QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+           this->ui->graphicsView->scene()->addItem(item);
+           this->ui->graphicsView->points.push_back(item);
             this->points.push_back(this->scene()->addEllipse(-4, -4, 8, 8, this->nodePen, node));
             this->points.back()->setPos(clickPos);
 
