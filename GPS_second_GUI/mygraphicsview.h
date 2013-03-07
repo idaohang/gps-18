@@ -9,7 +9,7 @@
 #include <deque>
 #include <iostream>
 #include <string>
-#include "../../common/Road.hpp"
+#include "Road.hpp"
 
 class MyGraphicsView : public QGraphicsView
 {
