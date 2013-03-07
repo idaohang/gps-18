@@ -203,6 +203,14 @@ void MainWindow::selectNode()
         return ;
     MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
     item->setSelected(false);
+
+    // debug de ouf
+    std::cout << "node " << (int)item->node << std::endl;
+    for (auto it = item->node->getLinks().begin(); it != item->node->getLinks().end(); ++it)
+    {
+        std::cout << (int)((*it).node) << std::endl;
+    }
+
     if (this->nodeMode == MainWindow::BEGIN)
     {
         QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
@@ -274,6 +282,7 @@ void MainWindow::parcourir()
                     QPointF pos2;
                     pos2.setX(node2->getX());
                     pos2.setY(node2->getY());
+                    this->ui->graphicsView->linePen.setWidth((*it2).road->getSpeed() / 20.0);
                     this->ui->graphicsView->lines.push_back(this->ui->graphicsView->scene()->addLine(tmpnode->getX(), tmpnode->getY(), node2->getX(), node2->getY(), this->ui->graphicsView->linePen));
                 }
             }
