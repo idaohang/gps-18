@@ -10,19 +10,17 @@
 #include <iostream>
 #include <string>
 #include "Road.hpp"
-#include "Database.hpp"
-#include "myqgraphicsellipseitem.h"
 
 class MyGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
     MyGraphicsView(QWidget *parent = 0);
-    Road *FinishRoadCreation(std::string const &, int);
+    void FinishRoadCreation(std::string const &, int);
     void CancelRoadCreation();
 
 protected:
-    void mouseReleaseEvent(QMouseEvent * event);
+    void mousePressEvent(QMouseEvent * event);
 
 signals:
     
@@ -30,15 +28,16 @@ public slots:
 
 public:
     bool isRoadDrawing;
-    std::deque<Node*>   nodes;
-    MyQGraphicsEllipseItem                  *selected;
 
-private:
+public:
     QBrush  node;
     QPen    nodePen;
     QPen    linePen;
-    std::deque<MyQGraphicsEllipseItem *>    points;
-    std::deque<QGraphicsLineItem *>         lines;
+    QPen    secondLinePen;
+    std::deque<QGraphicsEllipseItem *>  points;
+    std::deque<QGraphicsLineItem *>  lines;
+    std::deque<QGraphicsLineItem *>  secondLines;
+
 };
 
 #endif // MYGRAPHICSVIEW_H

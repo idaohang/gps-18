@@ -15,7 +15,7 @@ bool		Database::init(std::string const &path)
 {
 	bool	ret;
 
-	this->clear();
+    this->clear();
 	ret = this->open(path);
 	if (ret == false) return false;
 	ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS roads (id INTEGER PRIMARY KEY, name TEXT, speed INTEGER)");
@@ -24,8 +24,8 @@ bool		Database::init(std::string const &path)
 	if (ret == false) return false;
 	ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS links (id INTEGER PRIMARY KEY, idNode1 INTEGER, idNode2 INTEGER, idRoad INTEGER, oneway INTEGER, distance REAL)");
 	if (ret == false) return false;
-	ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS imgs (id INTEGER PRIMARY KEY, x INTEGER, y INTEGER, path TEXT");
-	return ret;
+    ret = this->oneStepRequest("CREATE TABLE IF NOT EXISTS imgs (id INTEGER PRIMARY KEY, x INTEGER, y INTEGER, path TEXT)");
+    return ret;
 }
 
 void		Database::load()
