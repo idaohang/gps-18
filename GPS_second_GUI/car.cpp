@@ -88,11 +88,8 @@ double                  car::getSpeed() const
 
 void                    car::traveled()
 {
-    std::cout << "Traveled in" << std::endl;
     emit moved();
-    std::cout << "Traveled middle" << std::endl;
     emit distanceTraveled((this->speed > 0) ? ((1000 * (double)this->speed) / 36000) : (0));
-    std::cout << "Traveled out" << std::endl;
 }
 
 void                    car::setMoveDistance(quint16 move)

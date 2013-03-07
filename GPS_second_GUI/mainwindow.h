@@ -47,6 +47,7 @@ private:
     Mode    nodeMode;
     Node    *begin;
     Node    *end;
+    qreal   currentScale;
 
 
     void                                    clearSearchComboBox();
@@ -62,7 +63,8 @@ public slots:
     //for voice's language change
     void            changeVoice(const QString &);
 
-
+    // zoom
+    void zoomChanged(int);
     void            speedChanged(int);
     void            searchLineEditTextChanged(const QString & text);
     void            carMoved(double);

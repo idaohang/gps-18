@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     voice(NULL),
     begin(NULL),
     end(NULL),
-    nodeMode(NONE)
+    nodeMode(NONE),
+    currentScale(1)
 {
     ui->setupUi(this);
 
@@ -72,65 +73,19 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->languageList->addItem("汉语");
     connect(this->ui->languageList, SIGNAL(currentTextChanged(QString)), this, SLOT(changeVoice(QString)));
 
-
-
-//    // BASIC DEBUG GRAPH
-//    Node *n1 = new Node(0 * 100, 0 * 100);
-//    Node *n2 = new Node(5 * 100, 0 * 100);
-//    Node *n3 = new Node(2 * 100, 1 * 100);
-//    Node *n4 = new Node(2 * 100, 2 * 100);
-//    Node *n5 = new Node(4 * 100, 2 * 100);
-//    Node *n6 = new Node(1 * 100, 4 * 100);
-//    Node *n7 = new Node(3 * 100, 4 * 100);
-//    Node *n8 = new Node(5 * 100, 4 * 100);
-//    Node *n9 = new Node(2 * 100, 5 * 100);
-//    Node *n10 = new Node(4 * 100, 5 * 100);
-
-//    Road *road = new Road("youpi", 30);
-//    Road *road2 = new Road("youpa", 120);
-
-//    n1->addLink(*n3, 1, road);
-//    n3->addLink(*n1, 1, road);
-
-//    n2->addLink(*n3, 1, road);
-//    n3->addLink(*n2, 1, road);
-
-//    n2->addLink(*n4, 1, road);
-//    n4->addLink(*n2, 1, road);
-
-//    n2->addLink(*n5, 1, road);
-//    n5->addLink(*n2, 1, road);
-
-//    n4->addLink(*n5, 1, road);
-//    n5->addLink(*n4, 1, road);
-
-//    n4->addLink(*n7, 1, road);
-//    n7->addLink(*n4, 1, road);
-
-//    n5->addLink(*n8, 1, road);
-//    n8->addLink(*n5, 1, road);
-
-//    n10->addLink(*n8, 1, road);
-//    n8->addLink(*n10, 1, road);
-
-//    n10->addLink(*n7, 1, road);
-//    n7->addLink(*n10, 1, road);
-
-//    n9->addLink(*n7, 1, road2);
-//    n7->addLink(*n9, 1, road2);
-
-//    n9->addLink(*n6, 1, road2);
-//    n6->addLink(*n9, 1, road2);
-
-//    n1->addLink(*n6, 1, road2);
-//    n6->addLink(*n1, 1, road2);
-
-//    this->end = n1;
-//    this->begin = n4;
+    // zoom
+    this->ui->zoomSlider->setValue(10);
+    connect(this->ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(zoomChanged(int)));
 
     this->myI->setZValue(100);
     this->myI->setPos(this->scene->width() / 2, this->scene->height() / 2);
-//    this->ui->graphicsView->scale(0.5, );
+}
+
+void MainWindow::zoomChanged(int zoom)
+{
+    qreal newScale = zoom / 10.;
+    this->ui->graphicsView->scale(newScale / this->currentScale, newScale / this->currentScale);
+    this->currentScale = newScale;
 }
 
 void MainWindow::changeVoice(const QString & newLanguage)
@@ -147,7 +102,6 @@ void MainWindow::changeVoice(const QString & newLanguage)
 // function called each 1/10 second
 void MainWindow::carMoved(double distance)
 {
-    std::cout << "CAR MOVED" << std::endl;
     if (this->myCarIsAPlane.getNextNode() == NULL)
         return;
     double distanceUntilNextNode = sqrt(pow((this->myCarIsAPlane.getX() - this->myCarIsAPlane.getNextNode()->getX()), 2) +
@@ -196,6 +150,7 @@ void MainWindow::carMoved(double distance)
             this->myCarIsAPlane.setPos(nextX, nextY);
             this->stopCar();
             this->begin = node;
+            this->ui->startCarButton->setEnabled(false);
             return ;
         }
         this->addDirectionMessage("Checkpoint reached.");
@@ -404,6 +359,8 @@ void MainWindow::launchSearch()
     path.resolve(this->displacementModes[this->ui->displacementMode->currentText()]);
     std::deque<Link *> const &result = path.getResult();
 
+    this->ui->startCarButton->setEnabled(true);
+
     // draw path
     Node *prev = this->begin;
     for (auto it = result.begin(); it != result.end(); ++it)
@@ -443,8 +400,6 @@ void MainWindow::launchSearch()
 
 void MainWindow::updateDisplayCarPos()
 {
-    std::cout << "POUET CONNARD" << std::endl;
-
     QString text;
     text = "Car data\n";
     text += "[X axis] : ";
@@ -483,8 +438,6 @@ void MainWindow::updateDisplayCarPos()
     text2 += distanceUntilNextNode;
     this->ui->carData_2->setPlainText(text2);
     this->ui->speedSlider->setValue(this->myCarIsAPlane.getSpeed());
-
-    std::cout << "{OUT} POUET CONNARD" << std::endl;
 }
 
 void MainWindow::moveCar()
