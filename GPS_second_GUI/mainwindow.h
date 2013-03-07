@@ -61,6 +61,8 @@ public slots:
 
     //for voice's language change
     void            changeVoice(const QString &);
+
+
     void            speedChanged(int);
     void            searchLineEditTextChanged(const QString & text);
     void            carMoved(double);
