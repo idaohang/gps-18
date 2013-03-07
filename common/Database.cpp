@@ -88,6 +88,7 @@ int64_t		Database::addLink(Node &node, Link &link)
 	auto	request = this->request("INSERT INTO links VALUES (null, ?1, ?2, ?3, ?4, ?5)");
 	request->bind(node.getId(), link.node->getId(), link.road->getId(), (oneway) ? true : false, link.distance);
 	request->next();
+	std::cout << request->getLastError() << std::endl;
 	link.id = this->getLastInsertRowID();
 	link2.id = link.id;
 	this->links[link.id].push_back(link);
@@ -106,7 +107,7 @@ void		Database::loadRoad()
 		road->setName(request->get<std::string>(1));
 		road->setSpeed(request->get<int>(2));
 		this->roads[road->getId()] = road;
-        //std::cout << "Road id: " << road->getId() << " name: " << road->getName() << " speed: " << road->getSpeed() << std::endl;
+		std::cout << "Road id: " << road->getId() << " name: " << road->getName() << " speed: " << road->getSpeed() << std::endl;
 	}
 }
 
@@ -120,41 +121,32 @@ void		Database::loadNode()
 		node = new Node(request->get<double>(1), request->get<double>(2));
 		node->setId(request->get<int64_t>(0));
 		this->nodes[node->getId()] = node;
-        //std::cout << "Node id: " << node->getId() << " x: " << node->getX() << " y: " << node->getY() << std::endl;
+		std::cout << "Node id: " << node->getId() << " x: " << node->getX() << " y: " << node->getY() << std::endl;
 	}
 }
 
 void		Database::loadLink()
 {
 	auto	request = this->request("SELECT * FROM links");
-    Node    *node;
 
 	while (request->next())
 	{
 		Link	link;
-        auto    it = this->nodes.find(request->get<int64_t>(1));
-        auto    it2 = this->nodes.find(request->get<int64_t>(2));
-        if (it == this->nodes.end() || it2 == this->nodes.end())
-            continue;
-        auto    itroad = this->roads.find(request->get<int64_t>(3));
-        Road    *road = nullptr;
-        if (itroad != this->roads.end())
-            road = itroad->second;
-
+		
 		link.id = request->get<int64_t>(0);
 		link.distance = request->get<double>(5);
-        link.node = it2->second;
-        link.road = road;
+        link.node = this->nodes[request->get<int64_t>(1)];
+		link.road = this->roads[request->get<int64_t>(3)];
 		if (!link.node)
 			continue;
-        it->second->addLink(link);
+		link.node->addLink(link);
 		this->links[link.id].push_back(link);
-        if (request->get<bool>(4))
+		if (request->get<int>(4))
 		{
-            link.node = it->second;
+            link.node = this->nodes[request->get<int64_t>(2)];
 			if (!link.node)
 				continue;
-            it2->second->addLink(link);
+			link.node->addLink(link);
 			this->links[link.id].push_back(link);
 		}
 	}

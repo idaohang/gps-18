@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->scene->setSceneRect(0.0, 0.0, 1000.0, 1000.0);
     pix = pix.fromImage(*mapImg, Qt::AutoColor);
     myI->setPixmap(pix);
-    //this->scene->addItem(myI);
     this->ui->mapDisplay->setScene(this->scene);
     this->ui->mapDisplay->show();
 }
