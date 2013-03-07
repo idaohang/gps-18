@@ -7,20 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>698</width>
-    <height>379</height>
+    <height>361</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>698</width>
-    <height>379</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>698</width>
-    <height>379</height>
-   </size>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Mon detecteur de charlottes aux fraises</string>
@@ -51,21 +45,24 @@
    </widget>
    <widget class="QTextEdit" name="directionsOutput">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>180</y>
       <width>301</width>
-      <height>161</height>
+      <height>141</height>
      </rect>
     </property>
     <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
+     <enum>Qt::ScrollBarAsNeeded</enum>
     </property>
     <property name="horizontalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QComboBox" name="searchComboBox">
@@ -235,8 +232,8 @@
      <rect>
       <x>10</x>
       <y>100</y>
-      <width>301</width>
-      <height>51</height>
+      <width>141</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="verticalScrollBarPolicy">
@@ -269,10 +266,64 @@
      </rect>
     </property>
    </widget>
+   <widget class="QSlider" name="speedSlider">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>10</y>
+      <width>111</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>250</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="carData_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>100</y>
+      <width>141</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+   </widget>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>searchLineEdit</tabstop>
+  <tabstop>searchComboBox</tabstop>
+  <tabstop>displacementMode</tabstop>
+  <tabstop>launchSearch</tabstop>
+  <tabstop>languageList</tabstop>
+  <tabstop>startCarButton</tabstop>
+  <tabstop>stopCarButton</tabstop>
+  <tabstop>pushButtonUpLeft</tabstop>
+  <tabstop>pushButtonUp</tabstop>
+  <tabstop>pushButtonUpRight</tabstop>
+  <tabstop>pushButtonRight</tabstop>
+  <tabstop>pushButtonDownRight</tabstop>
+  <tabstop>pushButtonDown</tabstop>
+  <tabstop>pushButtonDownLeft</tabstop>
+  <tabstop>pushButtonLeft</tabstop>
+  <tabstop>carData</tabstop>
+  <tabstop>graphicsViewMap</tabstop>
+  <tabstop>directionsOutput</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
