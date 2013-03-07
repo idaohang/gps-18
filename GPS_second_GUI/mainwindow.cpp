@@ -195,21 +195,6 @@ void MainWindow::chooseEnd()
     this->nodeMode = MainWindow::END;
 }
 
-void MainWindow::doPathFinding()
-{
-    if (!this->begin || !this->end)
-        return ;
-    PathFinding::get().setBegin(this->begin);
-    PathFinding::get().setEnd(this->end);
-    PathFinding::get().resolve(PathFinding::FASTEST);
-    std::deque<Link *> const &list = PathFinding::get().getResult();
-    Node *prev = this->begin;
-    for (auto it = list.begin(); it != list.end(); ++it)
-    {
-        Node *cur = (*it)->node;
-    }
-}
-
 void MainWindow::selectNode()
 {
     std::cout << "select" << std::endl;
