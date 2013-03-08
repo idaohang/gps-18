@@ -96,6 +96,7 @@ int64_t		Database::addLink(Node &node, Link &link)
 	link.id = this->getLastInsertRowID();
 	link2.id = link.id;
 	this->links[link.id].push_back(link);
+	this->links[link2.id].push_back(link);
 	return link.id;
 }
 

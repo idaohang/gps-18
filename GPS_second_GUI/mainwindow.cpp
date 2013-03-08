@@ -80,6 +80,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->myI->setZValue(100);
     this->myI->setPos(this->scene->width() / 2, this->scene->height() / 2);
+
+    // center camera
+    connect(this->ui->centerCamera, SIGNAL(clicked()), this, SLOT(centerCamera()));
+}
+
+void MainWindow::centerCamera()
+{
+    this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
 }
 
 void MainWindow::zoomChanged(int zoom)
@@ -436,7 +444,6 @@ void MainWindow::launchSearch()
 
     this->myI->setPos(this->myCarIsAPlane.getX(),
                       this->myCarIsAPlane.getY());
-//    this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
 }
 
 void MainWindow::drawPath(std::deque<Link *> &result)
