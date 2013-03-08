@@ -436,7 +436,7 @@ void MainWindow::launchSearch()
 
     this->myI->setPos(this->myCarIsAPlane.getX(),
                       this->myCarIsAPlane.getY());
-    this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
+//    this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
 }
 
 void MainWindow::drawPath(std::deque<Link *> &result)
