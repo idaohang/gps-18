@@ -74,6 +74,7 @@ public slots:
     void            stopCar();
     void            updateDisplayCarPos();
     void            launchSearch();
+    void            centerCamera();
 };
 
 #endif // MAINWINDOW_H
