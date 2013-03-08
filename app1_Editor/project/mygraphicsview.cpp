@@ -3,14 +3,15 @@
 MyGraphicsView::MyGraphicsView(QWidget *parent) :
     QGraphicsView(parent),
     isRoadDrawing(false),
-    node(QColor(0, 0, 255, 255)),
-    nodePen(QColor(0, 0, 255, 255)),
-    linePen(QColor(0, 0, 255, 150)),
-    selected(0)
+    node(QColor(50, 50, 200, 255)),
+    nodePen(QColor(50, 50, 200, 255)),
+    linePen(QColor(50, 50, 200, 255)),
+    selected(0),
+    isBothWay(true)
 {
     this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     nodePen.setWidth(0);
-    linePen.setWidth(5);
+    linePen.setWidth(6);
 }
 
 void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
@@ -20,7 +21,7 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
     MyQGraphicsEllipseItem *item;
     QPointF pos;
     Node    *tmpnode;
-    int    itemExists = 0;
+    //int    itemExists = 0;
 
     QGraphicsView::mouseReleaseEvent(event);
     if (this->isRoadDrawing)
@@ -36,6 +37,7 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
             }
             if (selected)
             {
+                selected->node->nb += 1;
                 if (lastPoint)
                     this->lines.push_back(this->scene()->addLine(lastPoint->scenePos().x(), lastPoint->scenePos().y(), selected->scenePos().x(), selected->scenePos().y(), this->linePen));
                 lastPoint = selected;
@@ -60,14 +62,7 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent * event)
         {
             if (!this->points.empty())
             {
-                for (auto it = this->points.begin(); it != this->points.end(); ++it)
-                {
-                    if (*it == this->points.back())
-                    {
-                        itemExists += 1;
-                    }
-                }
-                if (itemExists < 2)
+                if (this->points.back()->node->nb <= 1)
                     this->scene()->removeItem(this->points.back());
                 this->points.pop_back();
                 if (!this->lines.empty())
@@ -84,7 +79,8 @@ void MyGraphicsView::CancelRoadCreation()
 {
     for (auto it1 = this->points.begin(); it1 != this->points.end(); ++it1)
     {
-         this->scene()->removeItem(*it1);
+        if ((*it1)->node->nb <= 1)
+            this->scene()->removeItem(*it1);
     }
     for (auto it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
     {
@@ -105,24 +101,43 @@ Road *MyGraphicsView::FinishRoadCreation(std::string const & name, int speed)
     {
         if (it1 == this->points.begin())
         {
-            lastPoint = (*it1)->node;//new Node((*it1)->pos().x(), (*it1)->pos().y());
+            lastPoint = (*it1)->node;
             this->nodes.push_back(lastPoint);
         }
         else
         {
-            currentPoint = (*it1)->node;//new Node((*it1)->pos().x(), (*it1)->pos().y());
+            currentPoint = (*it1)->node;
             lastPoint->addLink(*currentPoint, 1, road);
-            currentPoint->addLink(*lastPoint, 1, road);
+            if (this->isBothWay)
+            {
+                currentPoint->addLink(*lastPoint, 1, road);
+            }
             this->nodes.push_back(currentPoint);
             lastPoint = currentPoint;
         }
-        (*it1)->setOpacity(0.3);
+        //(*it1)->setBrush(QBrush(QColor(50, 50, 100)));
     }
+    /*if (this->points.back()->node->nb > 1)
+    {
+        for (auto it = this->nodes.begin(); it != this->nodes.end() - 1; ++it)
+        {
+            if (*it == this->points.back()->node)
+            {
+                if (this->isBothWay)
+                    (*it)->addLink(*this->points.back()->node, 1, road);
+                this->points.back()->node->addLink(*(*it), 1, road);
+                std::cerr << this->points.back()->node << " " << *it << std::endl;
+                break;
+            }
+        }
+    }*/
     for (auto it2 = this->lines.begin(); it2 != this->lines.end(); ++it2)
     {
-        (*it2)->setOpacity(0.3);
+        //(*it2)->setPen(QPen(QColor(50, 50, 100)));
     }
+    std::cerr << this->nodes.size() << std::endl;
     this->points.clear();
     this->lines.clear();
     return road;
 }
+

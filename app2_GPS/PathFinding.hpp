@@ -19,7 +19,7 @@ public:
 	void	setBegin(Node *node);
 	void	setEnd(Node *node);
 	void	resolve(PathMode mode);
-	std::deque<Link *> const &getResult() const;
+    std::deque<Link *> &getResult();
 
 private:
 	Node	*_begin;
@@ -27,7 +27,13 @@ private:
 	std::deque<Link *> _result;
 
 
-	typedef std::priority_queue<Node *, std::vector<Node*>, std::less<std::vector<Node *>::value_type>> NodeQueue;
+    struct ptr_less {
+        template<class T>
+        bool operator()(const T& left, const T& right) const {
+            return ((*right) < (*left));
+        }
+    };
+    typedef std::priority_queue<Node *, /*std::vector<Node*>, std::less<std::vector<Node *>::value_type>*/std::vector<Node *>, ptr_less> NodeQueue;
 
 	void	algo(NodeQueue &queue, PathMode mode) const;
 	void	createNodeList();

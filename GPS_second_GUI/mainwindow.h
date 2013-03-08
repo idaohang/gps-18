@@ -31,15 +31,12 @@ private:
     car                                     myCarIsAPlane;
     QMap<QString, PathFinding::PathMode>    displacementModes;
     std::deque<Link *>                      currentPath;
-    std::deque<Link *>::const_iterator      currentNodeIndex;
     RoadReading                             *computeRoadEvents;
     GPSVoice                                *voice;
     QImage                                  *myImg;
     QGraphicsPixmapItem                     *myI;
 
-    //faut tout casser
-    Node                                    *debugBeginPosition;
-    Node                                    *destination;
+    quint16                                 indexNode;
 
     enum Mode
     {
@@ -50,8 +47,11 @@ private:
     Mode    nodeMode;
     Node    *begin;
     Node    *end;
+    qreal   currentScale;
+    bool    waitingForDecision;
 
 
+    void                                    drawPath(std::deque<Link *> &result);
     void                                    clearSearchComboBox();
     void                                    addDirectionMessage(QString);
     void                                    computeDirection(DirectionNext);
@@ -62,19 +62,16 @@ public slots:
     void parcourir();
     void selectNode();
 
+    //for voice's language change
+    void            changeVoice(const QString &);
+
+    // zoom
+    void zoomChanged(int);
     void            speedChanged(int);
     void            searchLineEditTextChanged(const QString & text);
     void            carMoved(double);
     void            moveCar();
     void            stopCar();
-//    void            updateCarPosN();
-//    void            updateCarPosS();
-//    void            updateCarPosE();
-//    void            updateCarPosW();
-//    void            updateCarPosNW();
-//    void            updateCarPosNE();
-//    void            updateCarPosSW();
-//    void            updateCarPosSE();
     void            updateDisplayCarPos();
     void            launchSearch();
 };

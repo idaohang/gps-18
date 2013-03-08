@@ -41,10 +41,10 @@ public:
 private:
     std::deque<Link *>  _listRoad;
     int                 _index;
-    int                 _positionCarX;
-    int                 _positionCarY;
-    int                 _positionCarXOld;
-    int                 _positionCarYOld;
+    double              _positionCarX;
+    double              _positionCarY;
+    double              _positionCarXOld;
+    double              _positionCarYOld;
 };
 
 #endif // ROADREADING_HPP

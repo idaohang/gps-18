@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Converter.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -8,24 +9,26 @@ MainWindow::MainWindow(QWidget *parent) :
     voice(NULL),
     begin(NULL),
     end(NULL),
-    nodeMode(NONE)
+    nodeMode(NONE),
+    currentScale(1),
+    waitingForDecision(false)
 {
     ui->setupUi(this);
 
     // Init scene
     this->scene = new QGraphicsScene();
     this->scene->setSceneRect(0.0, 0.0, 3793.0, 2704.0);
-    this->myImg = new QImage("C:\\Users\\hameli_p\\Pictures\\WOOT.png");
+    this->myImg = new QImage("../common/voiture.png");
     this->myI = new QGraphicsPixmapItem();
     QPixmap pix;
     pix = pix.fromImage( *(this->myImg), Qt::AutoColor );
     this->myI->setPixmap(pix);
+    this->myI->setOffset( -0.5 * QPointF( pix.size().width(), pix.size().height() ) );
     this->scene->addItem(this->myI);
     //this->ui->graphicsView->scale(0.2, 0.2);
     this->ui->graphicsView->setRenderHints( QPainter::Antialiasing );
     this->ui->graphicsView->setScene(this->scene);
     this->ui->graphicsView->show();
-    this->myI->setScale(0.2);
 
     // Search line and database init
     connect(this->ui->searchLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(searchLineEditTextChanged(const QString &)));
@@ -50,14 +53,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->stopCarButton->setEnabled(false);
     connect(this->ui->stopCarButton, SIGNAL(clicked()), this, SLOT(stopCar()));
     connect(this->ui->startCarButton, SIGNAL(clicked()), this, SLOT(moveCar()));
-//    connect(this->ui->pushButtonUp, SIGNAL(pressed()), this, SLOT(updateCarPosN()));
-//    connect(this->ui->pushButtonDown, SIGNAL(pressed()), this, SLOT(updateCarPosS()));
-//    connect(this->ui->pushButtonRight, SIGNAL(pressed()), this, SLOT(updateCarPosE()));
-//    connect(this->ui->pushButtonLeft, SIGNAL(pressed()), this, SLOT(updateCarPosW()));
-//    connect(this->ui->pushButtonUpLeft, SIGNAL(pressed()), this, SLOT(updateCarPosNW()));
-//    connect(this->ui->pushButtonUpRight, SIGNAL(pressed()), this, SLOT(updateCarPosNE()));
-//    connect(this->ui->pushButtonDownLeft, SIGNAL(pressed()), this, SLOT(updateCarPosSW()));
-//    connect(this->ui->pushButtonDownRight, SIGNAL(pressed()), this, SLOT(updateCarPosSE()));
     this->updateDisplayCarPos();
     connect(&this->myCarIsAPlane, SIGNAL(moved()), this, SLOT(updateDisplayCarPos()));
 
@@ -74,63 +69,35 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Init voice
     this->voice = new GPSVoice();
+    this->ui->languageList->addItem("English");
+    this->ui->languageList->addItem("Francais");
+    this->ui->languageList->addItem("汉语");
+    connect(this->ui->languageList, SIGNAL(currentTextChanged(QString)), this, SLOT(changeVoice(QString)));
 
+    // zoom
+    this->ui->zoomSlider->setValue(10);
+    connect(this->ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(zoomChanged(int)));
 
-    // BASIC DEBUG GRAPH
-    Node *n1 = new Node(0 * 100, 0 * 100);
-    Node *n2 = new Node(5 * 100, 0 * 100);
-    Node *n3 = new Node(2 * 100, 1 * 100);
-    Node *n4 = new Node(2 * 100, 2 * 100);
-    Node *n5 = new Node(4 * 100, 2 * 100);
-    Node *n6 = new Node(1 * 100, 4 * 100);
-    Node *n7 = new Node(3 * 100, 4 * 100);
-    Node *n8 = new Node(5 * 100, 4 * 100);
-    Node *n9 = new Node(2 * 100, 5 * 100);
-    Node *n10 = new Node(4 * 100, 5 * 100);
+    this->myI->setZValue(100);
+    this->myI->setPos(this->scene->width() / 2, this->scene->height() / 2);
+}
 
-    Road *road = new Road("youpi", 30);
-    Road *road2 = new Road("youpa", 120);
+void MainWindow::zoomChanged(int zoom)
+{
+    qreal newScale = zoom / 10.;
+    this->ui->graphicsView->scale(newScale / this->currentScale, newScale / this->currentScale);
+    this->currentScale = newScale;
+}
 
-    n1->addLink(*n3, 1, road);
-    n3->addLink(*n1, 1, road);
-
-    n2->addLink(*n3, 1, road);
-    n3->addLink(*n2, 1, road);
-
-    n2->addLink(*n4, 1, road);
-    n4->addLink(*n2, 1, road);
-
-    n2->addLink(*n5, 1, road);
-    n5->addLink(*n2, 1, road);
-
-    n4->addLink(*n5, 1, road);
-    n5->addLink(*n4, 1, road);
-
-    n4->addLink(*n7, 1, road);
-    n7->addLink(*n4, 1, road);
-
-    n5->addLink(*n8, 1, road);
-    n8->addLink(*n5, 1, road);
-
-    n10->addLink(*n8, 1, road);
-    n8->addLink(*n10, 1, road);
-
-    n10->addLink(*n7, 1, road);
-    n7->addLink(*n10, 1, road);
-
-    n9->addLink(*n7, 1, road2);
-    n7->addLink(*n9, 1, road2);
-
-    n9->addLink(*n6, 1, road2);
-    n6->addLink(*n9, 1, road2);
-
-    n1->addLink(*n6, 1, road2);
-    n6->addLink(*n1, 1, road2);
-    this->end = n1;
-    this->begin = n4;
-
-
-    this->myI->setPos(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY());
+void MainWindow::changeVoice(const QString & newLanguage)
+{
+    QString lang = newLanguage;
+    if (lang == "Francais")
+        this->voice->setLanguage(LanguageCountry::FR);
+    else if (lang == "English")
+        this->voice->setLanguage(LanguageCountry::EN);
+    else if (lang == "汉语")
+        this->voice->setLanguage(LanguageCountry::CN);
 }
 
 // function called each 1/10 second
@@ -149,60 +116,127 @@ void MainWindow::carMoved(double distance)
     this->myCarIsAPlane.setPos(newPosX, newPosY);
 
     // directions
+
     DirectionNext myNextDirection = this->computeRoadEvents->update(this->myCarIsAPlane.getX(),
                                                                     this->myCarIsAPlane.getY(),
                                                                     1,
-                                                                    this->myCarIsAPlane.getMoveDistance());
+                                                                    distance);
     computeDirection(myNextDirection);
     this->voice->updateVoice(myNextDirection);
 
 
-    this->myI->setPos(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY());
-
+    this->myI->setPos(this->myCarIsAPlane.getX(),
+                      this->myCarIsAPlane.getY());
+    this->myI->setRotation((alpha + ::PI / 2) * (180 / ::PI));
+    if (this->ui->followingCamera->isChecked())
+        this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
 
     // reached the next node
     if (distance - distanceUntilNextNode >= 0.)
     {
         double nextX;
         double nextY;
-        nextX = (*(this->currentNodeIndex))->node->getX();
-        nextY = (*(this->currentNodeIndex))->node->getY();
-        ++this->currentNodeIndex;
-        if (this->currentNodeIndex == this->currentPath.end())
+        nextX = this->currentPath[this->indexNode]->node->getX();
+        nextY = this->currentPath[this->indexNode]->node->getY();
+
+        Node *node = this->currentPath[this->indexNode]->node;
+
+        this->begin = node;
+        ++(this->indexNode);
+
+        // reached goal
+        if (this->indexNode >= this->currentPath.size())
         {
-            this->addDirectionMessage("You have arrived at your destination.");
             this->myCarIsAPlane.setNodes(NULL, NULL);
             this->myCarIsAPlane.stopMoving();
             this->myCarIsAPlane.setPos(nextX, nextY);
             this->stopCar();
+            this->begin = node;
+            this->end = NULL;
+            this->ui->startCarButton->setEnabled(false);
             return ;
         }
+        this->addDirectionMessage("Checkpoint reached.");
+        this->myCarIsAPlane.setNodes(this->myCarIsAPlane.getNextNode(), this->currentPath[this->indexNode]->node);
+
+        if (this->ui->autoAdjustSpeed->isChecked())
+        {
+            this->myCarIsAPlane.setSpeed(this->currentPath[this->indexNode]->road->getSpeed());
+            this->addDirectionMessage("Automatically adjusting speed to " + QString::number(this->currentPath[this->indexNode]->road->getSpeed()) + ".");
+        }
+        this->addDirectionMessage("You are now on the road \"" + QString(this->currentPath[this->indexNode]->road->getName().c_str()) + "\".");
+        if ((this->ui->followPath->isChecked() == false) && (this->currentPath[this->indexNode]->node->getLinks().size() > 2))
+        {
+            this->myCarIsAPlane.setSpeed(0);
+            this->waitingForDecision = true;
+            this->nodeMode = Mode::NONE;
+        }
         else
-            this->addDirectionMessage("Checkpoint reached.");
-        this->myCarIsAPlane.setNodes(this->myCarIsAPlane.getNextNode(), (*(this->currentNodeIndex))->node);
-        carMoved(distance - distanceUntilNextNode);
+            carMoved(distance - distanceUntilNextNode);
     }
 }
 
 // Gianni's functions for pathfinding
 void MainWindow::chooseBegin()
 {
+    this->waitingForDecision = false;
     this->nodeMode = MainWindow::BEGIN;
 }
 
 void MainWindow::chooseEnd()
 {
+    this->waitingForDecision = false;
     this->nodeMode = MainWindow::END;
 }
 
 void MainWindow::selectNode()
 {
-    std::cout << "select" << std::endl;
     QList<QGraphicsItem *> &list = this->ui->graphicsView->scene()->selectedItems();
     if (list.empty())
         return ;
     MyQGraphicsEllipseItem *item = static_cast<MyQGraphicsEllipseItem *>(list.front());
     item->setSelected(false);
+
+    if (this->waitingForDecision == true)
+    {
+        Node * node = item->node;
+        Node * currentNode = this->currentPath[this->indexNode - 1]->node;
+        for (auto it = currentNode->getLinks().begin(); it != currentNode->getLinks().end(); ++it)
+        {
+            if (it->node == node)
+            {
+                if ((this->indexNode < this->currentPath.size()) && (this->currentPath[this->indexNode]->node == node))
+                {
+                    this->waitingForDecision = false;
+                    this->myCarIsAPlane.setSpeed(this->currentPath[this->indexNode]->road->getSpeed());
+                }
+                else
+                {
+                    std::cout << "Next node" << std::endl;
+                    this->begin = currentNode;
+                    // get path
+                    PathFinding &path = PathFinding::get();
+                    path.setBegin(node);
+
+                    path.resolve(this->displacementModes[this->ui->displacementMode->currentText()]);
+                    std::deque<Link *> &result = path.getResult();
+                    result.push_front(&(*it));
+
+                    // reset path
+                    for (auto it = this->ui->graphicsView->secondLines.begin(); it != this->ui->graphicsView->secondLines.end(); ++it)
+                    {
+                        this->scene->removeItem(*it);
+                    }
+                    drawPath(result);
+                    this->currentPath = result;
+                    this->indexNode = 0;
+                    this->myCarIsAPlane.setNodes(currentNode, node);
+                    this->computeRoadEvents->setNewRoad(this->currentPath);
+                }
+            }
+        }
+        return ;
+    }
     if (this->nodeMode == MainWindow::BEGIN)
     {
         QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-4, -4, 8, 8);
@@ -232,7 +266,6 @@ void MainWindow::selectNode()
         pos.setY(item->node->getY());
         item2->setPos(pos);
         this->ui->graphicsView->scene()->addItem(item2);
-
         this->end = item->node;
     }
 }
@@ -252,6 +285,23 @@ void MainWindow::parcourir()
         if (Database::get().init(sFileName.toStdString()))
         {
             Database::get().load();
+            // load background image
+
+            if (Database::get().images.size() > 0)
+            {
+                std::string img;
+                QImage              *mapImg;
+                img = "../app1_Editor/map/";
+                img += (*Database::get().images.rbegin()).second->path;
+                mapImg = new QImage(img.c_str());
+                this->scene->setBackgroundBrush(QBrush(*mapImg));
+                int mapWidth = mapImg->width();
+                int mapHeight = mapImg->height();
+                this->scene->setSceneRect(0.0, 0.0, mapWidth, mapHeight);
+                QString *tmp = new QString(Converter::toString(mapWidth).c_str());
+                tmp = new QString(Converter::toString(mapHeight).c_str());
+            }
+            //////////////////////////
 
             for (auto it = Database::get().nodes.begin(); it != Database::get().nodes.end(); ++it)
             {
@@ -274,6 +324,7 @@ void MainWindow::parcourir()
                     QPointF pos2;
                     pos2.setX(node2->getX());
                     pos2.setY(node2->getY());
+                    this->ui->graphicsView->linePen.setWidth((*it2).road->getSpeed() / 20.0 + 2);
                     this->ui->graphicsView->lines.push_back(this->ui->graphicsView->scene()->addLine(tmpnode->getX(), tmpnode->getY(), node2->getX(), node2->getY(), this->ui->graphicsView->linePen));
                 }
             }
@@ -340,45 +391,69 @@ void MainWindow::addDirectionMessage(QString message)
 
 void MainWindow::launchSearch()
 {
-    if (!this->begin || !this->end)
+    if (!this->begin || !this->end || (this->begin == this->end))
         return ;
 
+    // reset scene
     for (auto it = this->ui->graphicsView->secondLines.begin(); it != this->ui->graphicsView->secondLines.end(); ++it)
     {
         this->scene->removeItem(*it);
     }
 
+    // get path
     PathFinding &path = PathFinding::get();
-
     path.setBegin(this->begin);
     path.setEnd(this->end);
+
     path.resolve(this->displacementModes[this->ui->displacementMode->currentText()]);
+    std::deque<Link *> &result = path.getResult();
 
-    std::deque<Link *> const &result = path.getResult();
+    this->ui->startCarButton->setEnabled(true);
 
-    Node *prev = this->begin;
-    for (auto it = result.begin(); it != result.end(); ++it)
-    {
-        Node *cur = (*it)->node;
-        this->ui->graphicsView->secondLines.push_back(this->ui->graphicsView->scene()->addLine(prev->getX(),
-                                                                                         prev->getY(),
-                                                                                         cur->getX(),
-                                                                                         cur->getY(),
-                                                                                         this->ui->graphicsView->secondLinePen));
-        prev = cur;
-    }
+    this->nodeMode = Mode::NONE;
 
+    // draw path
+    drawPath(result);
+
+    // directions stuff
     if (this->computeRoadEvents == NULL)
         this->computeRoadEvents = new RoadReading(result);
     else
         this->computeRoadEvents->setNewRoad(result);
 
     this->currentPath = result;
-    this->currentNodeIndex = result.begin();
+    this->indexNode = 0;
+
+    if (this->ui->autoAdjustSpeed->isChecked())
+    {
+        this->myCarIsAPlane.setSpeed(this->currentPath[this->indexNode]->road->getSpeed());
+        this->addDirectionMessage("Automatically adjusting speed to " + QString::number(this->currentPath[this->indexNode]->road->getSpeed()) + ".");
+    }
+    this->addDirectionMessage("You are now on the road \"" + QString(this->currentPath[this->indexNode]->road->getName().c_str()) + "\".");
 
     this->myCarIsAPlane.setNodes(this->begin, (result.size() > 1) ? ((*(result.begin()))->node) : (this->begin));
     this->myCarIsAPlane.setPos(this->begin->getX(), this->begin->getY());
 
+    this->myI->setPos(this->myCarIsAPlane.getX(),
+                      this->myCarIsAPlane.getY());
+    this->ui->graphicsView->centerOn(QPointF(this->myCarIsAPlane.getX(), this->myCarIsAPlane.getY()));
+}
+
+void MainWindow::drawPath(std::deque<Link *> &result)
+{
+    // draw path
+    Node *prev = this->begin;
+    for (auto it = result.begin(); it != result.end(); ++it)
+    {
+        Node *cur = (*it)->node;
+        this->ui->graphicsView->secondLines.push_back(this->ui->graphicsView->scene()->addLine(prev->getX(),
+                                                                                               prev->getY(),
+                                                                                               cur->getX(),
+                                                                                               cur->getY(),
+                                                                                               this->ui->graphicsView->secondLinePen));
+
+        prev = cur;
+    }
 }
 
 void MainWindow::updateDisplayCarPos()
@@ -420,6 +495,7 @@ void MainWindow::updateDisplayCarPos()
     text2 += "[Distance until next node] : ";
     text2 += distanceUntilNextNode;
     this->ui->carData_2->setPlainText(text2);
+    this->ui->speedSlider->setValue(this->myCarIsAPlane.getSpeed());
 }
 
 void MainWindow::moveCar()
@@ -429,6 +505,8 @@ void MainWindow::moveCar()
     this->ui->startCarButton->setEnabled(false);
     this->ui->stopCarButton->setEnabled(true);
     this->myCarIsAPlane.startMoving();
+    if (this->myCarIsAPlane.getSpeed() == 0)
+        this->myCarIsAPlane.setSpeed(50);
     this->ui->speedSlider->setSliderPosition(this->myCarIsAPlane.getSpeed());
 }
 
@@ -482,86 +560,12 @@ void MainWindow::clearSearchComboBox()
     }
 }
 
-//void            MainWindow::updateCarPosN()
-//{
-//    if (!this->ui->pushButtonUp->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosN()));
-//    this->myCarIsAPlane.setY(this->myCarIsAPlane.getY() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosS()
-//{
-//    if (!this->ui->pushButtonDown->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosS()));
-//    this->myCarIsAPlane.setY(this->myCarIsAPlane.getY() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosE()
-//{
-//    if (!this->ui->pushButtonRight->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosE()));
-//    this->myCarIsAPlane.setX(this->myCarIsAPlane.getX() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosW()
-//{
-//    if (!this->ui->pushButtonLeft->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosW()));
-//    this->myCarIsAPlane.setX(this->myCarIsAPlane.getX() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosNW()
-//{
-//    if (!this->ui->pushButtonUpLeft->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosNW()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() - this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosNE()
-//{
-//    if (!this->ui->pushButtonUpRight->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosNE()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() + this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() - this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosSW()
-//{
-//    if (!this->ui->pushButtonDownLeft->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosSW()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() - this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
-//void            MainWindow::updateCarPosSE()
-//{
-//    if (!this->ui->pushButtonDownRight->isDown())
-//        return;
-//    QTimer::singleShot(500, this, SLOT(updateCarPosSE()));
-//    this->myCarIsAPlane.setPos(this->myCarIsAPlane.getX() + this->myCarIsAPlane.getMoveDistance(),
-//                               this->myCarIsAPlane.getY() + this->myCarIsAPlane.getMoveDistance());
-//    this->updateDisplayCarPos();
-//}
-
 void            MainWindow::speedChanged(int newSpeed)
 {
     if (newSpeed < 0)
         return;
+    if (newSpeed != 0)
+        this->waitingForDecision = false;
     this->myCarIsAPlane.setSpeed(newSpeed);
 }
 

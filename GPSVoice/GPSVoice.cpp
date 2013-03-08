@@ -3,6 +3,7 @@
 GPSVoice::GPSVoice()
 {
     this->_language = EN;
+    _time = 0;
 }
 
 GPSVoice::~GPSVoice()
@@ -14,8 +15,11 @@ void    GPSVoice::setLanguage(LanguageCountry language)
     this->_language = language;
 }
 
-void    GPSVoice::updateVoice(DirectionNext direction)
+void    GPSVoice::updateVoice(DirectionNext direction, int elapsedTime)
 {
+    _time += elapsedTime;
+    if (_time < 0)
+        return;
     if (_language == EN )
     {
         if ( direction == STRAIGHT_150)
@@ -109,4 +113,6 @@ void    GPSVoice::updateVoice(DirectionNext direction)
         if ( direction == ARRIVE)
             QSound::play("../GPSVoice/GPSVoice/GPSVoice_FR_Arrive.wav");
     }
+    if (direction <= TURN_BACK)
+        _time = -3000;
 }

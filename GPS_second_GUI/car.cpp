@@ -1,5 +1,7 @@
 #include "car.h"
 
+#include <iostream>
+
 car::car() : speed(0), x(0.), y(0.), orientation(0), moveDistance(5), previousNode(NULL), nextNode(NULL), moving(false)
 {
     this->engine.setSingleShot(false);
